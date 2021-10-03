@@ -2,8 +2,7 @@ const nodemailer = require('nodemailer')
 require('dotenv').config()
 
 
-console.log(process.env.USER_EMAIL)
-console.log(process.env.PASS_EMAIL)
+
 
 class CreateSenderNodemailer {
     async send(msg) {

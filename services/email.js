@@ -6,7 +6,7 @@ class EmailService {
         this.sender = sender
         switch (env) {
             case 'development':
-                this.link = 'http://bef0-185-209-58-177.ngrok.io '
+                this.link = 'http://localhost:3000'
                 break
             case 'production':
                 this.link = process.env.LINK_THIS_APP
@@ -50,8 +50,8 @@ class EmailService {
             subject: 'Verify your contact',
             html: emailHtml
         }
-        const result = await this.sender.send(msg)
-        console.log(result)
+        await this.sender.send(msg)
+
     }
 }
 

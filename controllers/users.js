@@ -26,7 +26,7 @@ const reg = async (req, res, next) => {
         const newUser = await serviceUser.create({ name, email, password, subscription })
 
         try {
-            const emailService = new EmailService(process.env.NODE_ENV, new CreateSenderSendGrid())
+            const emailService = new EmailService(process.env.NODE_ENV, new CreateSenderNodemailer())
             await emailService.sendVerifyEmail(newUser.verifyToken, newUser.email, newUser.name)
 
         } catch (e) {
