@@ -11,6 +11,8 @@ router.post('/registration', createAccountLimiter, controllerUser.reg)
 router.post('/login', controllerUser.login)
 router.post('/logout', guard, controllerUser.logout)
 
+router.get('/verify/:token', controllerUser.verify)
+router.post('/verify', controllerUser.repeatEmailVerification)
 
 
 module.exports = router
