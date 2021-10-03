@@ -4,7 +4,7 @@ const cors = require('cors')
 
 const helmet = require('helmet')
 const rateLimit = require("express-rate-limit")
-const { HttpCode } = require('./helpers/constants')
+const { HttpCode } = require('./helpers')
 const { apiLimit, jsonLimit } = require('./config/rate-limit.json')
 const { ErrorHandler } = require('./helpers/error-handler')
 
@@ -39,6 +39,14 @@ app.use("/api/", rateLimit({
 }))
 app.use('/api/users', usersRouter)
 
+app.use('/', (req, res) => {
+    res.status(HttpCode.OK).json({
+        status: 'success',
+        code: HttpCode.Ok,
+        message: `Use api on routes ${process.env.LINK_THIS_APP}/api/users`,
+        data: 'Hello World',
+    })
+})
 
 app.use((req, res) => {
     res.status(HttpCode.NOT_FOUND).json({
