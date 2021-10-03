@@ -4,7 +4,7 @@ const { AuthService,
     CreateSenderNodemailer,
 } = require('../services')
 const { UsersRepository } = require('../repositories')
-const { HttpCode } = require('../helpers/constants')
+const { HttpCode } = require('../helpers')
 
 require('dotenv').config()
 
