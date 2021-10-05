@@ -1,4 +1,4 @@
-const db = require('./db')
-const UserSchema = require('./user')
+const db = require('./db');
+const UserSchema = require('./user');
 
-module.exports = { db, UserSchema }
+module.exports = { db, UserSchema };
