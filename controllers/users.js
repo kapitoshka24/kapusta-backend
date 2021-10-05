@@ -4,8 +4,8 @@ const {
   EmailService,
   CreateSenderNodemailer,
 } = require('../services');
-const { UsersRepository } = require('../repositories');
-const { HttpCode } = require('../helpers');
+const usersRepository = require('../repositories/user');
+const { httpCode } = require('../helpers/constants');
 
 require('dotenv').config();
 
@@ -17,9 +17,9 @@ const signup = async (req, res, next) => {
     const { name, email, password } = req.body;
     const user = await serviceUser.findByEmail(email);
     if (user) {
-      return res.status(HttpCode.CONFLICT).json({
+      return res.status(httpCode.CONFLICT).json({
         status: 'error',
-        code: HttpCode.CONFLICT,
+        code: httpCode.CONFLICT,
         message: 'This email is already use',
       });
     }
@@ -44,9 +44,9 @@ const signup = async (req, res, next) => {
       console.log(error.message);
     }
 
-    return res.status(HttpCode.CREATED).json({
+    return res.status(httpCode.CREATED).json({
       status: 'success',
-      code: HttpCode.CREATED,
+      code: httpCode.CREATED,
       data: {
         id: newUser.id,
         name: newUser.name,
@@ -63,17 +63,17 @@ const login = async (req, res, next) => {
     const { email, password } = req.body;
     const token = await serviceAuth.login({ email, password });
     if (token) {
-      return res.status(HttpCode.OK).json({
+      return res.status(httpCode.OK).json({
         status: 'success',
-        code: HttpCode.OK,
+        code: httpCode.OK,
         data: {
           token,
         },
       });
     }
-    return res.status(HttpCode.UNAUTHORIZED).json({
+    return res.status(httpCode.UNAUTHORIZED).json({
       status: 'error',
-      code: HttpCode.UNAUTHORIZED,
+      code: httpCode.UNAUTHORIZED,
       message: 'Invalid credentials',
     });
   } catch (error) {
@@ -85,9 +85,9 @@ const logout = async (req, res, next) => {
   try {
     const id = req.user.id;
     await serviceAuth.logout(id);
-    return res.status(HttpCode.NO_CONTENT).json({
+    return res.status(httpCode.NO_CONTENT).json({
       status: 'success',
-      code: HttpCode.NO_CONTENT,
+      code: httpCode.NO_CONTENT,
       data: 'Not authorized',
     });
   } catch (error) {
@@ -100,18 +100,18 @@ const getCurrentUser = async (req, res, next) => {
     const id = req.user.id;
 
     if (!id) {
-      return res.status(HttpCode.UNAUTHORIZED).json({
+      return res.status(httpCode.UNAUTHORIZED).json({
         status: 'error',
-        code: HttpCode.UNAUTHORIZED,
+        code: httpCode.UNAUTHORIZED,
         message: 'Not authorized',
       });
     }
 
     const { name, email } = await serviceUser.findById(id);
 
-    return res.status(HttpCode.OK).json({
+    return res.status(httpCode.OK).json({
       status: 'success',
-      code: HttpCode.OK,
+      code: httpCode.OK,
       data: {
         name,
         email,
@@ -124,23 +124,21 @@ const getCurrentUser = async (req, res, next) => {
 
 const verify = async (req, res, next) => {
   try {
-    const user = await new UsersRepository().findByVerifyToken(
-      req.params.token,
-    );
+    const user = await usersRepository.findByVerifyToken(req.params.token);
 
     if (!user) {
-      return res.status(HttpCode.BAD_REQUEST).json({
+      return res.status(httpCode.BAD_REQUEST).json({
         status: 'error',
-        code: HttpCode.BAD_REQUEST,
+        code: httpCode.BAD_REQUEST,
         message: 'Verification token is valid',
       });
     }
 
-    await new UsersRepository().updateTokenVerify(user.id, true, null);
+    await usersRepository.updateTokenVerify(user.id, true, null);
 
-    return res.status(HttpCode.OK).json({
+    return res.status(httpCode.OK).json({
       status: 'success',
-      code: HttpCode.OK,
+      code: httpCode.OK,
       data: {
         message: 'Verification successful!',
       },
@@ -152,12 +150,12 @@ const verify = async (req, res, next) => {
 
 const repeatEmailVerification = async (req, res, next) => {
   try {
-    const user = await new UsersRepository().findByEmail(req.body.email);
+    const user = await usersRepository.findByEmail(req.body.email);
 
     if (!user) {
-      return res.status(HttpCode.NOT_FOUND).json({
+      return res.status(httpCode.NOT_FOUND).json({
         status: 'error',
-        code: HttpCode.NOT_FOUND,
+        code: httpCode.NOT_FOUND,
         message: 'User not found',
       });
     }
@@ -169,15 +167,15 @@ const repeatEmailVerification = async (req, res, next) => {
         new CreateSenderNodemailer(),
       );
       await emailService.sendVerifyEmail(verifyToken, email, name);
-      return res.status(HttpCode.OK).json({
+      return res.status(httpCode.OK).json({
         status: 'success',
-        code: HttpCode.OK,
+        code: httpCode.OK,
         data: { message: 'Verification email sent' },
       });
     }
-    return res.status(HttpCode.BAD_REQUEST).json({
+    return res.status(httpCode.BAD_REQUEST).json({
       status: 'error',
-      code: HttpCode.BAD_REQUEST,
+      code: httpCode.BAD_REQUEST,
       message: 'Verification has already been passed',
     });
   } catch (error) {
