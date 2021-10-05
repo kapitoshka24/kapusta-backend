@@ -35,9 +35,9 @@ const limiterAPI = {
   windowMs: apiLimit.windowMs,
   max: apiLimit.max,
   handler: (req, res, _) => {
-    return res.status(HttpCode.TOO_MANY_REQUESTS).json({
+    return res.status(httpCode.TOO_MANY_REQUESTS).json({
       status: 'error',
-      code: HttpCode.TOO_MANY_REQUESTS,
+      code: httpCode.TOO_MANY_REQUESTS,
       message: 'Sorry, you did too many requests.',
     });
   },

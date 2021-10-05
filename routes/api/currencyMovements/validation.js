@@ -33,7 +33,7 @@ module.exports = {
     return validate(
       currencyMovementValidateSchema,
       req.body,
-      'missing required fields or value is not valid',
+      'Missing required fields or value is not valid',
       next,
     );
   },
@@ -41,7 +41,7 @@ module.exports = {
     return validate(
       currencyMovementUpdateValidateSchema,
       req.body,
-      'missing update fields',
+      'Missing update fields',
       next,
     );
   },

@@ -3,10 +3,9 @@ const logger = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const { apiLimit, jsonLimit } = require('./config/rate-limit.json');
-const { ErrorHandler } = require('./helpers/error-handler');
+const { jsonLimit } = require('./config/rate-limit.json');
 const boolParser = require('express-query-boolean');
-const { httpCode } = require('./helpers/constants');
+const { httpCode, limiterAPI } = require('./helpers/constants');
 require('dotenv').config();
 
 const app = express();
@@ -25,8 +24,8 @@ app.use('/api/', require('./routes/api'));
 
 app.use((_, res) => {
   res
-    .status(HttpCode.NOT_FOUND)
-    .json({ status: 'error', code: HttpCode.NOT_FOUND, message: 'Not found' });
+    .status(httpCode.NOT_FOUND)
+    .json({ status: 'error', code: httpCode.NOT_FOUND, message: 'Not found' });
 });
 
 app.use((err, req, res, next) => {

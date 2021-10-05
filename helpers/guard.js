@@ -1,6 +1,6 @@
 const passport = require('passport');
 require('../config/passport');
-const HttpCode = require('./constants');
+const httpCode = require('./constants');
 
 const guard = (req, res, next) => {
   passport.authenticate('jwt', { session: false }, (error, user) => {
@@ -10,9 +10,9 @@ const guard = (req, res, next) => {
       token = headerAuth.split(' ')[1];
     }
     if (error || !user || token !== user?.token) {
-      return res.status(HttpCode.UNAUTHORIZED).json({
+      return res.status(httpCode.UNAUTHORIZED).json({
         status: 'error',
-        code: HttpCode.UNAUTHORIZED,
+        code: httpCode.UNAUTHORIZED,
         message: 'Invalid credentials',
       });
     }
