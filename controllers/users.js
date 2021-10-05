@@ -4,7 +4,7 @@ const {
   EmailService,
   CreateSenderNodemailer,
 } = require('../services');
-const usersRepository = require('../repositories/user');
+const { UsersRepository } = require('../repositories/user');
 const { httpCode } = require('../helpers/constants');
 
 require('dotenv').config();
@@ -15,7 +15,7 @@ const serviceAuth = new AuthService();
 const signup = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
-    const user = await serviceUser.findByEmail(email);
+    const user = await new UsersRepository().findByEmail(email);
     if (user) {
       return res.status(httpCode.CONFLICT).json({
         status: 'error',
@@ -124,7 +124,9 @@ const getCurrentUser = async (req, res, next) => {
 
 const verify = async (req, res, next) => {
   try {
-    const user = await usersRepository.findByVerifyToken(req.params.token);
+    const user = await new UsersRepository().findByVerifyToken(
+      req.params.token,
+    );
 
     if (!user) {
       return res.status(httpCode.BAD_REQUEST).json({
@@ -134,7 +136,7 @@ const verify = async (req, res, next) => {
       });
     }
 
-    await usersRepository.updateTokenVerify(user.id, true, null);
+    await new UsersRepository().updateTokenVerify(user.id, true, null);
 
     return res.status(httpCode.OK).json({
       status: 'success',
@@ -150,7 +152,7 @@ const verify = async (req, res, next) => {
 
 const repeatEmailVerification = async (req, res, next) => {
   try {
-    const user = await usersRepository.findByEmail(req.body.email);
+    const user = await new UsersRepository().findByEmail(req.body.email);
 
     if (!user) {
       return res.status(httpCode.NOT_FOUND).json({
