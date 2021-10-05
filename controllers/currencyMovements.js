@@ -25,13 +25,16 @@ const createLine = async (req, res) => {
 
 const updateLine = async (req, res, next) => {
   const {
-    body: { name: reqName, sum: reqSum },
+    body,
     params: { lineId },
   } = req;
+  const { name: reqName, sum: reqSum } = body;
+
+  console.log(reqName, reqSum);
   if (reqName || reqSum) {
     const { date, name, category, sum } = await update(lineId, {
-      reqName,
-      reqSum,
+      name: reqName,
+      sum: reqSum,
     });
     return res.json({
       status: 'ok',
@@ -62,37 +65,57 @@ const deleteLine = async (req, res) => {
   throw new NotFound('NOT_FOUND');
 };
 
-const getAllIncomesLines = async (req, res) => {
-  const { query } = req;
-  const { docs: lines } = await getAllLines(query);
-  return res.json({
-    status: 'ok',
-    code: 200,
-    data: {
-      incomes: lines,
-    },
+const getAllIncomesLines = async (req, res, next) => {
+  const { query, path } = req;
+  const { docs: lines } = await getAllLines(query, path.slice(1));
+  if (lines.length > 0) {
+    return res.json({
+      status: 'ok',
+      code: 200,
+      data: {
+        incomes: lines,
+      },
+    });
+  }
+  next({
+    status: httpCode.NOT_FOUND,
+    message: message.NOT_FOUND,
   });
 };
 
-const getAllExpendsLines = async (_, res) => {
-  const lines = await getAllLines();
-  return res.json({
-    status: 'ok',
-    code: 200,
-    data: {
-      incomes: lines,
-    },
+const getAllExpendsLines = async (req, res, next) => {
+  const { query, path } = req;
+  const { docs: lines } = await getAllLines(query, path.slice(1));
+  if (lines.length > 0) {
+    return res.json({
+      status: 'ok',
+      code: 200,
+      data: {
+        expends: lines,
+      },
+    });
+  }
+  next({
+    status: httpCode.NOT_FOUND,
+    message: message.NOT_FOUND,
   });
 };
 
-const getAllAdjustmentsLines = async (_, res) => {
-  const lines = await getAllLines();
-  return res.json({
-    status: 'ok',
-    code: 200,
-    data: {
-      adjustments: lines,
-    },
+const getAllAdjustmentsLines = async (req, res, next) => {
+  const { query, path } = req;
+  const { docs: lines } = await getAllLines(query, path.slice(1));
+  if (lines.length > 0) {
+    return res.json({
+      status: 'ok',
+      code: 200,
+      data: {
+        expends: lines,
+      },
+    });
+  }
+  next({
+    status: httpCode.NOT_FOUND,
+    message: message.NOT_FOUND,
   });
 };
 
