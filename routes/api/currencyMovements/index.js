@@ -7,6 +7,9 @@ const {
   getAllExpendsLines,
   getAllAdjustmentsLines,
 } = require('../../../controllers/currencyMovements');
+
+const { getSummary } = require('../../../controllers');
+
 const asyncWrapper = require('../../../helpers/asyncWrapper');
 const { validationCurrencyMovement } = require('./validation');
 
@@ -18,5 +21,7 @@ router.patch('/update/:lineId', asyncWrapper(updateLine));
 router.get('/incomes', asyncWrapper(getAllIncomesLines));
 router.get('/expends', asyncWrapper(getAllExpendsLines));
 router.get('/adjustments', asyncWrapper(getAllAdjustmentsLines));
+
+router.get('/summary', asyncWrapper(getSummary));
 
 module.exports = router;

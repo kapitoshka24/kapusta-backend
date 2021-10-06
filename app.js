@@ -6,6 +6,8 @@ const rateLimit = require('express-rate-limit');
 const { jsonLimit } = require('./config/rate-limit.json');
 const boolParser = require('express-query-boolean');
 const { httpCode, limiterAPI } = require('./helpers/constants');
+
+const currencyMovements = require('./routes/api');
 require('dotenv').config();
 
 const app = express();
@@ -21,6 +23,8 @@ app.use(boolParser());
 
 app.use('/api/', rateLimit(limiterAPI));
 app.use('/api/', require('./routes/api'));
+
+app.use('/api/currencyMovements', currencyMovements);
 
 app.use((_, res) => {
   res
