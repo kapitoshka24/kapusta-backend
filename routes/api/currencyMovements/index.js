@@ -15,8 +15,8 @@ const router = express.Router();
 router.post('/create', validationCurrencyMovement, asyncWrapper(createLine));
 router.delete('/:lineId', asyncWrapper(deleteLine));
 router.patch('/update/:lineId', asyncWrapper(updateLine));
-router.get('/', asyncWrapper(getAllIncomesLines));
-router.get('/', asyncWrapper(getAllExpendsLines));
-router.get('/', asyncWrapper(getAllAdjustmentsLines));
+router.get('/incomes', asyncWrapper(getAllIncomesLines));
+router.get('/expends', asyncWrapper(getAllExpendsLines));
+router.get('/adjustments', asyncWrapper(getAllAdjustmentsLines));
 
 module.exports = router;

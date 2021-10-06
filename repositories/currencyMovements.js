@@ -26,22 +26,22 @@ const delLine = async lineId => {
   return '';
 };
 
-const getAllLines = async query => {
-  const { limit = 20, page = 1, type } = query;
+const getAllLines = async (query, path) => {
+  const { limit = 20, page = 1 } = query;
 
-  const checkType = type => {
-    if (type === 'incomes') {
+  const checkType = path => {
+    if (path === 'incomes') {
       return incomes;
     }
-    if (type === 'expends') {
+    if (path === 'expends') {
       return expends;
     }
-    if (type === 'adjustments') {
+    if (path === 'adjustments') {
       return adjustments;
     }
   };
 
-  const options = { category: { $in: checkType(type) } };
+  const options = { category: { $in: checkType(path) } };
 
   const lines = await CurrencyMovement.paginate(options, {
     page,
