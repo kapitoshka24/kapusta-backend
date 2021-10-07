@@ -91,6 +91,37 @@
         }
       }
     },
+    "/users/logout": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Logout user",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token issued to the current user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {}
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {}
+          }
+        }
+      }
+    },
     "/users/current": {
       "get": {
         "tags": ["User"],
@@ -109,6 +140,10 @@
         "responses": {
           "200": {
             "description": "Successful operation",
+            "content": {}
+          },
+          "401": {
+            "description": "Invalid credentials",
             "content": {}
           },
           "500": {
