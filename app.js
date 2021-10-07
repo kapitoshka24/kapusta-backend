@@ -24,7 +24,7 @@ app.use(boolParser());
 app.use('/api/', rateLimit(limiterAPI));
 app.use('/api/', require('./routes/api'));
 
-app.use('/api/currencyMovements', currencyMovements);
+// app.use('/api/currencyMovements', currencyMovements);
 
 app.use((_, res) => {
   res

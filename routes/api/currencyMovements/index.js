@@ -22,6 +22,7 @@ router.get('/incomes', asyncWrapper(getAllIncomesLines));
 router.get('/expends', asyncWrapper(getAllExpendsLines));
 router.get('/adjustments', asyncWrapper(getAllAdjustmentsLines));
 
-router.get('/summary', asyncWrapper(getSummary));
+router.get('/summaryExpenses', asyncWrapper(getSummary));
+router.get('/summaryIncome', asyncWrapper(getSummary));
 
 module.exports = router;

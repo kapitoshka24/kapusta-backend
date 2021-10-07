@@ -1,23 +1,14 @@
 const CurrencyMovement = require('../model/currencyMovement');
 
+const { incomes } = require('../helpers/categories');
 const { expends } = require('../helpers/categories');
 
-const months = [
-  'Январь',
-  'Февраль',
-  'Март',
-  'Апрель',
-  'Май',
-  'Июнь',
-  'Июль',
-  'Август',
-  'Сентябрь',
-  'Октябрь',
-  'Ноябрь',
-  'Декабрь',
-];
+const { monthsArray } = require('../helpers');
 
 const getSummary = async (req, res) => {
+  const pathСheck =
+    req.originalUrl === '/api/currencymovements/summaryExpenses';
+
   const response = await CurrencyMovement.aggregate([
     {
       $match: {
@@ -32,7 +23,7 @@ const getSummary = async (req, res) => {
         date: '$date',
         sum: '$sum',
         category: {
-          $in: ['$category', expends],
+          $in: ['$category', pathСheck ? expends : incomes],
         },
       },
     },
@@ -48,7 +39,7 @@ const getSummary = async (req, res) => {
   ]);
 
   for (let i in response) {
-    response[i]._id = months[response[i]._id - 1];
+    response[i]._id = monthsArray[response[i]._id - 1];
   }
 
   res.status(200).json({
