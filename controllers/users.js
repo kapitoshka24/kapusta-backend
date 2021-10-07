@@ -97,30 +97,29 @@ const logout = async (req, res, next) => {
 
 const getCurrentUser = async (req, res, next) => {
   try {
-    const id = req.user.id;
+    const id = req.user.id
+    if (id) {
 
-    if (!id) {
-      return res.status(httpCode.UNAUTHORIZED).json({
-        status: 'error',
-        code: httpCode.UNAUTHORIZED,
-        message: 'Not authorized',
-      });
+      const { name, email } = await serviceUser.findById(id)
+
+      return res.status(HttpCode.OK).json({
+        status: 'success',
+        code: httpCode.OK,
+        data: {
+          name,
+          email
+        }
+      })
     }
-
-    const { name, email } = await serviceUser.findById(id);
-
-    return res.status(httpCode.OK).json({
-      status: 'success',
-      code: httpCode.OK,
-      data: {
-        name,
-        email,
-      },
-    });
-  } catch (error) {
-    next(error);
+    next({
+      status: httpCode.UNAUTHORIZED,
+      message: 'Not authorized'
+    })
+  } catch (e) {
+    next(e)
   }
-};
+
+}
 
 const verify = async (req, res, next) => {
   try {
