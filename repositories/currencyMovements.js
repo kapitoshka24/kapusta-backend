@@ -26,7 +26,7 @@ const delLine = async lineId => {
   return '';
 };
 
-const getAllLines = async (query, path) => {
+const getAll = async (query, path) => {
   const { limit = 20, page = 1 } = query;
 
   const checkType = path => {
@@ -41,7 +41,7 @@ const getAllLines = async (query, path) => {
     }
   };
 
-  const options = { category: { $in: checkType(path) } };
+  const options = path ? { category: { $in: checkType(path) } } : '';
 
   const lines = await CurrencyMovement.paginate(options, {
     page,
@@ -54,4 +54,22 @@ const getAllLines = async (query, path) => {
   return lines;
 };
 
-module.exports = { addLine, update, delLine, getAllLines };
+const getBalance = async () => {
+  const expendsCategories = [...expends];
+  const balance = await CurrencyMovement.find();
+  return balance.reduce((acc, { category, sum }) => {
+    if (expendsCategories.includes(category)) {
+      return acc - sum;
+    } else {
+      return acc + sum;
+    }
+  }, 0);
+};
+
+module.exports = {
+  addLine,
+  update,
+  delLine,
+  getAll,
+  getBalance,
+};

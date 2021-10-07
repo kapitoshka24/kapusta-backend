@@ -3,17 +3,17 @@ const { categories } = require('../../../helpers/categories.js');
 const { httpCode } = require('../../../helpers/constants.js');
 
 const currencyMovementValidateSchema = Joi.object({
-  date: Joi.string().required(),
+  date: Joi.date().required(),
   name: Joi.string().max(40).required(),
   category: Joi.string()
     .valid(...categories)
     .required(),
-  sum: Joi.number().required(),
+  sum: Joi.number().min(0).required(),
 });
 
 const currencyMovementUpdateValidateSchema = Joi.object({
   name: Joi.string().max(40).optional(),
-  sum: Joi.number().optional(),
+  sum: Joi.number().min(0).optional(),
 });
 
 const validate = async (schema, validatedValue, errMessage, next) => {
