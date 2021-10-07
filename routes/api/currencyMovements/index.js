@@ -10,6 +10,8 @@ const {
 const asyncWrapper = require('../../../helpers/asyncWrapper');
 const { validationCurrencyMovement } = require('./validation');
 
+const { getdetailedCategories } = require('../../../controllers');
+
 const router = express.Router();
 
 router.post('/create', validationCurrencyMovement, asyncWrapper(createLine));
@@ -18,5 +20,7 @@ router.patch('/update/:lineId', asyncWrapper(updateLine));
 router.get('/incomes', asyncWrapper(getAllIncomesLines));
 router.get('/expends', asyncWrapper(getAllExpendsLines));
 router.get('/adjustments', asyncWrapper(getAllAdjustmentsLines));
+
+router.get('/detailedCategories', asyncWrapper(getdetailedCategories));
 
 module.exports = router;
