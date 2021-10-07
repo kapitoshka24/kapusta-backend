@@ -11,11 +11,15 @@
   },
   "consumes": ["application/json"],
   "produces": ["application/json"],
-  "servers": [{ "url": "http://localhost:3000/api" }],
+  "servers": [{ "url": "https://kapusta-backend.herokuapp.com/api" }],
   "tags": [
     {
       "name": "User",
       "description": "User registration and authorization endpoints"
+    },
+    {
+      "name": "Currency-movement",
+      "description": "User currency movement endpoints"
     }
   ],
   "paths": {
@@ -152,6 +156,103 @@
           }
         }
       }
+    },
+    "/currencymovements/create": {
+      "post": {
+        "tags": ["Currency-movement"],
+        "summary": "Create currency movement",
+        "parameters": [],
+        "requestBody": {
+          "description": "Create object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CurrencyMovementRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrencyMovementResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required fields or value is not valid",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/currencymovements/{:id}": {
+      "delete": {
+        "tags": ["Currency-movement"],
+        "summary": "Delete currency movement",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Line deleted",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/currencymovements/incomes": {
+      "get": {
+        "tags": ["Currency-movement"],
+        "summary": "Get currency incomes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCurrencyIncomes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/currencymovements/adjustments": {
+      "get": {
+        "tags": ["Currency-movement"],
+        "summary": "Get currency adjustments",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCurrencyIncomes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          }
+        }
+      }
     }
   },
   "components": {
@@ -237,6 +338,131 @@
           "code": 200,
           "data": { "token": "KIJBULHFLUV:IJB:IVJB:IVY:I" }
         }
+      },
+      "CurrencyMovementRequest": {
+        "type": "object",
+        "required": ["date", "name", "category", "sum"],
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "current date",
+            "example": "01.01.2021"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name currency",
+            "example": "Подарки"
+          },
+          "category": {
+            "type": "string",
+            "description": "Currency category",
+            "example": "other-income"
+          },
+          "sum": {
+            "type": "integer",
+            "description": "sum category",
+            "example": "1500"
+          }
+        }
+      },
+      "CurrencyMovementResponse": {
+        "type": "object",
+        "items": {
+          "type": "object",
+          "properties": {
+            "date": {
+              "type": "string",
+              "description": "Current date",
+              "example": "01.10.2021"
+            },
+            "name": {
+              "type": "string",
+              "description": "name category",
+              "example": "Подарки"
+            },
+            "category": {
+              "type": "string",
+              "description": "categories",
+              "example": "other income"
+            },
+            "sum": {
+              "type": "integer",
+              "description": "sum",
+              "example": "1500"
+            }
+          }
+        },
+        "example": {
+          "status": "success",
+          "code": 201,
+          "data": {
+            "createdLine": {
+              "date": "01.10.2021",
+              "name": "Подарки",
+              "category": "other-income",
+              "sum": 1500
+            }
+          }
+        }
+      },
+      "GetCurrencyIncomes": {
+        "type": "object",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": " id element"
+            },
+            "date": {
+              "type": "string",
+              "description": "Current date",
+              "example": "01.10.2021"
+            },
+            "name": {
+              "type": "string",
+              "description": "name category",
+              "example": "Подарки"
+            },
+            "category": {
+              "type": "string",
+              "description": "categories",
+              "example": "other income"
+            },
+            "sum": {
+              "type": "integer",
+              "description": "sum",
+              "example": "1500"
+            },
+            "createdAt": {
+              "type": "string",
+              "description": "Server date challenge",
+              "example": "2021-10-05T18:12:59.904Z"
+            },
+            "updatedAt": {
+              "type": "string",
+              "description": "Server date challenge",
+              "example": "2021-10-05T18:12:59.904Z"
+            }
+          }
+        },
+        "example": {
+          "status": "ok",
+          "code": 200,
+          "data": {
+            "expends": [
+              {
+                "_id": "615c95abe15423fb9de8b4cd",
+                "date": "04.10.2021",
+                "name": "adjustment",
+                "category": "adjustments",
+                "sum": 150,
+                "createdAt": "2021-10-05T18:12:59.904Z",
+                "updatedAt": "2021-10-05T18:12:59.904Z"
+              }
+            ]
+          }
+        }
       }
     },
     "securitySchemes": {
@@ -245,7 +471,6 @@
         "scheme": "bearer",
         "bearerFormat": "JWT"
       }
-    },
-    "security": { "Bearer": [] }
+    }
   }
 }
