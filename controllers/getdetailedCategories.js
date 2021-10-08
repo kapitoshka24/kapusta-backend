@@ -1,8 +1,14 @@
+const { BadRequest } = require('http-errors');
+
 const CurrencyMovement = require('../model/currencyMovement');
 
 const detailedInfoCategories = async (req, res) => {
   const { date } = req.body;
   const { categories } = req.query;
+
+  if (!date) {
+    throw new BadRequest();
+  }
 
   const dateSplit = date.split('/');
 
