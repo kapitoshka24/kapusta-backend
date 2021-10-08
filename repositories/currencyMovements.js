@@ -53,5 +53,37 @@ const getAllLines = async (query, path) => {
 
   return lines;
 };
+const getSummaryYear = async (year, pathСheck) => {
+  const SummaryYear = await CurrencyMovement.aggregate([
+    {
+      $match: {
+        date: {
+          $gte: new Date(`${+year}-01-01`),
+          $lt: new Date(`${+year + 1}-01-01`),
+        },
+      },
+    },
+    {
+      $project: {
+        date: '$date',
+        sum: '$sum',
+        category: {
+          $in: ['$category', pathСheck ? expends : incomes],
+        },
+      },
+    },
+    { $match: { category: true } },
+    {
+      $group: {
+        _id: {
+          $dateToString: { format: '%m', date: '$date' },
+        },
+        total: { $sum: '$sum' },
+      },
+    },
+  ]);
 
-module.exports = { addLine, update, delLine, getAllLines };
+  return SummaryYear;
+};
+
+module.exports = { addLine, update, delLine, getAllLines, getSummaryYear };
