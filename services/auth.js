@@ -1,4 +1,5 @@
-const UsersRepository = require('../repositories');
+const { UsersRepository } = require('../repositories');
+const { SessionModel } = require('../model')
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const SECRET_KEY = process.env.SECRET_KEY;
@@ -17,10 +18,15 @@ class AuthService {
       return null;
     }
     const id = user.id;
-    const payload = { id };
+
+    const newSession = await SessionModel.create({
+      uid: id
+    })
+    const payload = { uid: id, sid: newSession._id };
     const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '1h' });
-    console.log(token);
-    await this.repositories.users.updateToken(id, token);
+    const refreshToken = jwt.sign(payload, SECRET_KEY, { expiresIn: '1d' });
+
+    await this.repositories.users.updateToken(id, token,);
     return token;
   }
 

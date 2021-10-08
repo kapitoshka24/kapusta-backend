@@ -1,7 +1,7 @@
 const express = require('express');
 const controllerUser = require('../../../controllers/users');
-const guard = require('../../../helpers/guard');
-const createAccountLimiter = require('../../../helpers/rate-limit');
+const { guard } = require('../../../helpers/guard');
+const { createAccountLimiter } = require('../../../helpers/rate-limit');
 const router = express.Router();
 const {
   validationRegistrationUser,

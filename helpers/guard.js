@@ -1,9 +1,9 @@
 const passport = require('passport');
 require('../config/passport');
-const httpCode = require('./constants');
+const { httpCode } = require('./constants');
 
 const guard = (req, res, next) => {
-  passport.authenticate('jwt', { session: false }, (error, user) => {
+  passport.authenticate('jwt', { session: true }, (error, user) => {
     const headerAuth = req.get('Authorization');
     let token = null;
     if (headerAuth) {
@@ -23,4 +23,4 @@ const guard = (req, res, next) => {
     return next();
   })(req, res, next);
 };
-module.exports = guard;
+module.exports = { guard };
