@@ -1,3 +1,5 @@
+const { BadRequest } = require('http-errors');
+
 const CurrencyMovement = require('../model/currencyMovement');
 
 const { incomes } = require('../helpers/categories');
@@ -9,12 +11,18 @@ const getSummary = async (req, res) => {
   const pathСheck =
     req.originalUrl === '/api/currencymovements/summaryExpenses';
 
+  const { year } = req.body;
+
+  if (!year) {
+    throw new BadRequest('incorrect data entry');
+  }
+
   const response = await CurrencyMovement.aggregate([
     {
       $match: {
         date: {
-          $gte: new Date('2021-01-01'),
-          $lt: new Date('2022-01-01'),
+          $gte: new Date(`${year}-01-01`),
+          $lt: new Date(`${year + 1}-01-01`),
         },
       },
     },
