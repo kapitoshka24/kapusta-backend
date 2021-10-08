@@ -54,4 +54,39 @@ const getAllLines = async (query, path) => {
   return lines;
 };
 
-module.exports = { addLine, update, delLine, getAllLines };
+const getDetailedInfoCategories = async (category, dateSplit) => {
+  const detailedInfoCategories = await CurrencyMovement.aggregate([
+    {
+      $project: {
+        month: { $month: '$date' },
+        year: { $year: '$date' },
+        name: '$name',
+        category: '$category',
+        sum: '$sum',
+      },
+    },
+    {
+      $match: {
+        category: category,
+        month: +dateSplit[0],
+        year: +dateSplit[1],
+      },
+    },
+    {
+      $group: {
+        _id: '$name',
+        sum: { $sum: '$sum' },
+      },
+    },
+  ]);
+
+  return detailedInfoCategories;
+};
+
+module.exports = {
+  addLine,
+  update,
+  delLine,
+  getAllLines,
+  getDetailedInfoCategories,
+};
