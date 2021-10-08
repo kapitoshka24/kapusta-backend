@@ -1,6 +1,7 @@
 const express = require('express');
-const controllerUser = require('../../../controllers/users');
-const { guard } = require('../../../helpers/guard');
+const controllerUser = require('../../../controllers/users')
+const { register, login, logout } = require('../../../controllers/auth');
+const { guard, asyncWrapper } = require('../../../helpers');
 const { createAccountLimiter } = require('../../../helpers/rate-limit');
 const router = express.Router();
 const {
@@ -11,12 +12,12 @@ const {
 router.get('/current', guard, controllerUser.getCurrentUser);
 router.post(
   '/registration',
-  validationRegistrationUser,
+
   createAccountLimiter,
-  controllerUser.signup,
+  asyncWrapper(register),
 );
-router.post('/login', validationLoginUser, controllerUser.login);
-router.post('/logout', guard, controllerUser.logout);
+router.post('/login', validationLoginUser, asyncWrapper(login));
+router.post('/logout', guard, asyncWrapper(logout));
 
 router.get('/verify/:token', controllerUser.verify);
 router.post('/verify', controllerUser.repeatEmailVerification);

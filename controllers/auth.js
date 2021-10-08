@@ -1,14 +1,13 @@
-import { Request, Response, NextFunction } from "express";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import axios from "axios";
-import { UserSchema, SessionModel, CurrencyMovement } from "../model";
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const axios = require('axios')
+const { UserSchema, SessionModel } = require('../model')
 require('dotenv').config();
 
 
-export const register = async (req, res) => {
+const register = async (req, res) => {
     const { email, password, name } = req.body;
-    const existingUser = await UserModel.findOne({ email });
+    const existingUser = await UserSchema.findOne({ email });
     if (existingUser) {
         return res
             .status(409)
@@ -30,7 +29,7 @@ export const register = async (req, res) => {
     });
 };
 
-export const login = async (req, res, next) => {
+const login = async (req, res, next) => {
     const { email, password } = req.body;
     const user = await UserSchema.findOne({ email });
     if (!user) {
@@ -80,7 +79,7 @@ export const login = async (req, res, next) => {
         });
 };
 
-export const authorize = async (req, res, next) => {
+const authorize = async (req, res, next) => {
     const authorizationHeader = req.get("Authorization");
     if (authorizationHeader) {
         const accessToken = authorizationHeader.replace("Bearer ", "");
@@ -104,7 +103,7 @@ export const authorize = async (req, res, next) => {
     } else return res.status(400).send({ message: "No token provided" });
 };
 
-export const refreshTokens = async (req, res) => {
+const refreshTokens = async (req, res) => {
     const authorizationHeader = req.get("Authorization");
     if (authorizationHeader) {
         const activeSession = await SessionModel.findById(req.body.sid);
@@ -149,8 +148,7 @@ export const refreshTokens = async (req, res) => {
     }
     return res.status(400).send({ message: "No token provided" });
 };
-
-export const logout = async (req, res) => {
+const logout = async (req, res) => {
     const currentSession = req.session;
     await SessionModel.deleteOne({ _id: (currentSession)._id });
     req.user = null;
@@ -158,7 +156,7 @@ export const logout = async (req, res) => {
     return res.status(204).end();
 };
 
-export const googleAuth = async (req, res) => {
+const googleAuth = async (req, res) => {
     const stringifiedParams = queryString.stringify({
         client_id: process.env.GOOGLE_CLIENT_ID,
         redirect_uri: `${process.env.BASE_URL}/auth/google-redirect`,
@@ -175,7 +173,7 @@ export const googleAuth = async (req, res) => {
     );
 };
 
-export const googleRedirect = async (req, res) => {
+const googleRedirect = async (req, res) => {
     const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
     const urlObj = new URL(fullUrl);
     const urlParams = queryString.parse(urlObj.search);
@@ -226,3 +224,4 @@ export const googleRedirect = async (req, res) => {
         `${existingParent.originUrl}?accessToken=${accessToken}&refreshToken=${refreshToken}&sid=${newSession._id}`
     );
 };
+module.exports = { register, login, logout, authorize, refreshTokens, googleAuth, googleRedirect }
