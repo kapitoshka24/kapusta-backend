@@ -99,6 +99,7 @@
       "post": {
         "tags": ["User"],
         "summary": "Logout user",
+        "security": [{ "Bearer": [] }],
         "parameters": [
           {
             "name": "Authorization",
@@ -130,6 +131,7 @@
       "get": {
         "tags": ["User"],
         "summary": "Get an information about user",
+        "security": [{ "Bearer": [] }],
         "parameters": [
           {
             "name": "Authorization",
@@ -161,6 +163,7 @@
       "post": {
         "tags": ["Currency-movement"],
         "summary": "Create currency movement",
+        "security": [{ "Bearer": [] }],
         "parameters": [],
         "requestBody": {
           "description": "Create object",
@@ -195,6 +198,7 @@
       "delete": {
         "tags": ["Currency-movement"],
         "summary": "Delete currency movement",
+        "security": [{ "Bearer": [] }],
         "parameters": [],
         "responses": {
           "200": {
@@ -212,6 +216,7 @@
       "get": {
         "tags": ["Currency-movement"],
         "summary": "Get currency incomes",
+        "security": [{ "Bearer": [] }],
         "parameters": [],
         "responses": {
           "200": {
@@ -235,6 +240,7 @@
       "get": {
         "tags": ["Currency-movement"],
         "summary": "Get currency adjustments",
+        "security": [{ "Bearer": [] }],
         "parameters": [],
         "responses": {
           "200": {
