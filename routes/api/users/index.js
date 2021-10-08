@@ -1,8 +1,7 @@
 const express = require('express');
 const controllerUser = require('../../../controllers/users')
 const { register, login, logout } = require('../../../controllers/auth');
-const { guard, asyncWrapper } = require('../../../helpers');
-const { createAccountLimiter } = require('../../../helpers/rate-limit');
+const { guard, asyncWrapper, createAccountLimiter } = require('../../../helpers');
 const router = express.Router();
 const {
   validationRegistrationUser,
@@ -12,7 +11,6 @@ const {
 router.get('/current', guard, controllerUser.getCurrentUser);
 router.post(
   '/registration',
-
   createAccountLimiter,
   asyncWrapper(register),
 );

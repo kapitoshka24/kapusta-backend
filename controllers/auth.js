@@ -1,13 +1,15 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const axios = require('axios')
-const { UserSchema, SessionModel } = require('../model')
+const { SessionModel } = require('../model')
+const { UsersRepository } = require('../repositories');
 require('dotenv').config();
 
+const userRepository = new UsersRepository()
 
 const register = async (req, res) => {
     const { email, password, name } = req.body;
-    const existingUser = await UserSchema.findOne({ email });
+    const existingUser = await userRepository.findByEmail({ email });
     if (existingUser) {
         return res
             .status(409)
@@ -17,14 +19,14 @@ const register = async (req, res) => {
         password,
         Number(process.env.HASH_POWER)
     );
-    const newUser = await UserSchema.create({
+    const newUser = await userRepository.create({
         email,
         passwordHash,
         name
     });
     return res.status(201).send({
         email,
-        username,
+        name,
         id: newUser._id,
     });
 };
