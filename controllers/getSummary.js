@@ -1,10 +1,5 @@
 const { BadRequest } = require('http-errors');
 
-const CurrencyMovement = require('../model/currencyMovement');
-
-const { incomes } = require('../helpers/categories');
-const { expends } = require('../helpers/categories');
-
 const { getSummaryYear } = require('../repositories/currencyMovements');
 const { monthsArray } = require('../helpers');
 
