@@ -112,35 +112,35 @@ export const refreshTokens = async (req, res) => {
             return res.status(404).send({ message: "Invalid session" });
         }
         const reqRefreshToken = authorizationHeader.replace("Bearer ", "");
-        let payload: string | object;
+        let payload;
         try {
-            payload = jwt.verify(reqRefreshToken, process.env.JWT_SECRET as string);
+            payload = jwt.verify(reqRefreshToken, process.env.JWT_SECRET);
         } catch (err) {
             await SessionModel.findByIdAndDelete(req.body.sid);
             return res.status(401).send({ message: "Unauthorized" });
         }
-        const user = await UserModel.findById((payload as IJWTPayload).uid);
-        const session = await SessionModel.findById((payload as IJWTPayload).sid);
+        const user = await UserSchema.findById((payload).uid);
+        const session = await SessionModel.findById((payload).sid);
         if (!user) {
             return res.status(404).send({ message: "Invalid user" });
         }
         if (!session) {
             return res.status(404).send({ message: "Invalid session" });
         }
-        await SessionModel.findByIdAndDelete((payload as IJWTPayload).sid);
+        await SessionModel.findByIdAndDelete((payload).sid);
         const newSession = await SessionModel.create({
             uid: user._id,
         });
         const newAccessToken = jwt.sign(
             { uid: user._id, sid: newSession._id },
-            process.env.JWT_SECRET as string,
+            process.env.JWT_SECRET,
             {
                 expiresIn: process.env.JWT_ACCESS_EXPIRE_TIME,
             }
         );
         const newRefreshToken = jwt.sign(
             { uid: user._id, sid: newSession._id },
-            process.env.JWT_SECRET as string,
+            process.env.JWT_SECRET,
             { expiresIn: process.env.JWT_REFRESH_EXPIRE_TIME }
         );
         return res
@@ -150,15 +150,15 @@ export const refreshTokens = async (req, res) => {
     return res.status(400).send({ message: "No token provided" });
 };
 
-export const logout = async (req: Request, res: Response) => {
+export const logout = async (req, res) => {
     const currentSession = req.session;
-    await SessionModel.deleteOne({ _id: (currentSession as ISession)._id });
+    await SessionModel.deleteOne({ _id: (currentSession)._id });
     req.user = null;
     req.session = null;
     return res.status(204).end();
 };
 
-export const googleAuth = async (req: Request, res: Response) => {
+export const googleAuth = async (req, res) => {
     const stringifiedParams = queryString.stringify({
         client_id: process.env.GOOGLE_CLIENT_ID,
         redirect_uri: `${process.env.BASE_URL}/auth/google-redirect`,
@@ -175,7 +175,7 @@ export const googleAuth = async (req: Request, res: Response) => {
     );
 };
 
-export const googleRedirect = async (req: Request, res: Response) => {
+export const googleRedirect = async (req, res) => {
     const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
     const urlObj = new URL(fullUrl);
     const urlParams = queryString.parse(urlObj.search);
@@ -210,80 +210,14 @@ export const googleRedirect = async (req: Request, res: Response) => {
     });
     const accessToken = jwt.sign(
         { uid: existingParent._id, sid: newSession._id },
-        process.env.JWT_SECRET as string,
+        process.env.JWT_SECRET,
         {
             expiresIn: process.env.JWT_ACCESS_EXPIRE_TIME,
         }
     );
     const refreshToken = jwt.sign(
         { uid: existingParent._id, sid: newSession._id },
-        process.env.JWT_SECRET as string,
-        {
-            expiresIn: process.env.JWT_REFRESH_EXPIRE_TIME,
-        }
-    );
-    return res.redirect(
-        `${existingParent.originUrl}?accessToken=${accessToken}&refreshToken=${refreshToken}&sid=${newSession._id}`
-    );
-};
-
-export const facebookAuth = async (req: Request, res: Response) => {
-    const stringifiedParams = queryString.stringify({
-        client_id: process.env.FACEBOOK_APP_ID,
-        redirect_uri: `${process.env.BASE_URL}/auth/facebook-redirect/`,
-        scope: "email",
-        response_type: "code",
-        auth_type: "rerequest",
-        display: "popup",
-    });
-    return res.redirect(
-        `https://www.facebook.com/v4.0/dialog/oauth?${stringifiedParams}`
-    );
-};
-
-export const facebookRedirect = async (req: Request, res: Response) => {
-    const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
-    const urlObj = new URL(fullUrl);
-    const urlParams = queryString.parse(urlObj.search);
-    const code = urlParams.code;
-    const tokenData = await axios({
-        url: "https://graph.facebook.com/v4.0/oauth/access_token",
-        method: "get",
-        params: {
-            client_id: process.env.FACEBOOK_APP_ID,
-            client_secret: process.env.FACEBOOK_APP_SECRET,
-            redirect_uri: `${process.env.BASE_URL}/auth/facebook-redirect/`,
-            code,
-        },
-    });
-    const userData = await axios({
-        url: "https://graph.facebook.com/me",
-        method: "get",
-        params: {
-            fields: ["email", "first_name"].join(","),
-            access_token: tokenData.data.access_token,
-        },
-    });
-    let existingParent = await UserModel.findOne({ email: userData.data.email });
-    if (!existingParent || !existingParent.originUrl) {
-        return res.status(403).send({
-            message:
-                "You should register from front-end first (not postman). Google/Facebook are only for sign-in",
-        });
-    }
-    const newSession = await SessionModel.create({
-        uid: existingParent._id,
-    });
-    const accessToken = jwt.sign(
-        { uid: existingParent._id, sid: newSession._id },
-        process.env.JWT_SECRET as string,
-        {
-            expiresIn: process.env.JWT_ACCESS_EXPIRE_TIME,
-        }
-    );
-    const refreshToken = jwt.sign(
-        { uid: existingParent._id, sid: newSession._id },
-        process.env.JWT_SECRET as string,
+        process.env.JWT_SECRET,
         {
             expiresIn: process.env.JWT_REFRESH_EXPIRE_TIME,
         }
