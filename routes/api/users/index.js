@@ -8,7 +8,7 @@ const {
   validateRefreshToken
 } = require('./validation');
 
-router.get('/current', controllerUser.getCurrentUser);
+
 router.post(
   '/registration',
   validationRegistrationUser,
@@ -18,8 +18,8 @@ router.post(
 router.post("/logout", controllerUser.authorize, controllerUser.logout);
 router.post('/login', validationLoginUser, controllerUser.login);
 router.post("/refresh", validateRefreshToken, controllerUser.refreshTokens);
-
 router.get('/verify/:token', controllerUser.verify);
 router.post('/verify', controllerUser.repeatEmailVerification);
+router.get('/current', controllerUser.getCurrentUser);
 
 module.exports = router;

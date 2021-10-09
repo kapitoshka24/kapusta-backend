@@ -25,10 +25,6 @@ class UsersRepository {
     return user.save();
   }
 
-  async updateToken(id, token) {
-    await this.Model.updateOne({ _id: id }, { token });
-  }
-
   async updateTokenVerify(id, isVerified, verifyToken) {
     await this.Model.updateOne({ _id: id }, { isVerified, verifyToken });
   }

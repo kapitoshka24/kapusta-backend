@@ -1,5 +1,4 @@
 const Joi = require('joi');
-const mongoose = require('mongoose')
 const { httpCode } = require('../../../helpers/constants');
 
 const schemaRegistrationUser = Joi.object({

@@ -13,6 +13,7 @@ require('dotenv').config();
 
 const serviceUser = new UserService();
 const serviceAuth = new AuthService();
+const userRepository = new UsersRepository()
 
 
 const signup = async (req, res, next) => {
@@ -26,13 +27,11 @@ const signup = async (req, res, next) => {
         message: 'This email is already use',
       });
     }
-
     const newUser = await serviceUser.create({
       name,
       email,
       password,
     });
-
     try {
       const emailService = new EmailService(
         process.env.NODE_ENV,
@@ -46,7 +45,6 @@ const signup = async (req, res, next) => {
     } catch (error) {
       console.log(error.message);
     }
-
     return res.status(httpCode.CREATED).json({
       status: 'success',
       code: httpCode.CREATED,
@@ -60,7 +58,6 @@ const signup = async (req, res, next) => {
     next(error);
   }
 };
-
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -95,11 +92,15 @@ const login = async (req, res, next) => {
         if (err) {
           next(err);
         }
-        return res.status(200).send({
-          accessToken,
-          refreshToken,
-          sid: newSession._id,
+        return res.status(httpCode.OK).send({
+          status: 'success',
+          code: httpCode.OK,
           data: {
+            headers: {
+              accessToken,
+              refreshToken,
+              sid: newSession._id,
+            },
             email: data.email,
             name: data.name,
             id: data._id
@@ -109,8 +110,8 @@ const login = async (req, res, next) => {
     } catch (e) {
       next(e)
     }
-  } catch (error) {
-    next(error);
+  } catch (e) {
+    next(e);
   }
 };
 const authorize = async (req, res, next) => {
@@ -122,20 +123,20 @@ const authorize = async (req, res, next) => {
       try {
         payload = jwt.verify(accessToken, process.env.JWT_SECRET);
       } catch (err) {
-        return res.status(401).send({ message: "Unauthorized" });
+        return res.status(httpCode.UNAUTHORIZED).send({ message: "Unauthorized" });
       }
       const user = await UserSchema.findById((payload).uid);
       const session = await SessionModel.findById((payload).sid);
       if (!user) {
-        return res.status(404).send({ message: "Invalid user" });
+        return res.status(httpCode.NOT_FOUND).send({ message: "Invalid user" });
       }
       if (!session) {
-        return res.status(404).send({ message: "Invalid session" });
+        return res.status(httpCode.NOT_FOUND).send({ message: "Invalid session" });
       }
       req.user = user;
       req.session = session;
       next();
-    } else return res.status(400).send({ message: "No token provided" });
+    } else return res.status(httpCode.BAD_REQUEST).send({ message: "No token provided" });
   } catch (e) {
     next(e.message)
   }
@@ -146,14 +147,14 @@ const logout = async (req, res) => {
   await SessionModel.deleteOne({ _id: (currentSession)._id });
   req.user = null;
   req.session = null;
-  return res.status(204).end();
+  return res.status(httpCode.NO_CONTENT).end();
 };
 const refreshTokens = async (req, res) => {
   const authorizationHeader = req.get("Authorization");
   if (authorizationHeader) {
     const activeSession = await SessionModel.findById(req.body.sid);
     if (!activeSession) {
-      return res.status(404).send({ message: "Invalid session" });
+      return res.status(httpCode.NOT_FOUND).send({ message: "Invalid session" });
     }
     const reqRefreshToken = authorizationHeader.replace("Bearer ", "");
     let payload;
@@ -161,15 +162,15 @@ const refreshTokens = async (req, res) => {
       payload = jwt.verify(reqRefreshToken, process.env.JWT_SECRET);
     } catch (err) {
       await SessionModel.findByIdAndDelete(req.body.sid);
-      return res.status(401).send({ message: "Unauthorized" });
+      return res.status(httpCode.UNAUTHORIZED).send({ message: "Unauthorized" });
     }
     const user = await UserSchema.findById((payload).uid);
     const session = await SessionModel.findById((payload).sid);
     if (!user) {
-      return res.status(404).send({ message: "Invalid user" });
+      return res.status(httpCode.NOT_FOUND).send({ message: "Invalid user" });
     }
     if (!session) {
-      return res.status(404).send({ message: "Invalid session" });
+      return res.status(httpCode.NOT_FOUND).send({ message: "Invalid session" });
     }
     await SessionModel.findByIdAndDelete((payload).sid);
     const newSession = await SessionModel.create({
@@ -188,12 +189,11 @@ const refreshTokens = async (req, res) => {
       { expiresIn: process.env.JWT_REFRESH_EXPIRE_TIME }
     );
     return res
-      .status(200)
-      .send({ newAccessToken, newRefreshToken, newSid: newSession._id });
+      .status(httpCode.OK)
+      .send({ headers: { newAccessToken, newRefreshToken, newSid: newSession._id } });
   }
-  return res.status(400).send({ message: "No token provided" });
+  return res.status(httpCode.BAD_REQUEST).send({ message: "No token provided" });
 };
-
 const getCurrentUser = async (req, res, next) => {
   try {
     const authorizationHeader = req.get("Authorization");
@@ -203,19 +203,19 @@ const getCurrentUser = async (req, res, next) => {
       try {
         payload = jwt.verify(accessToken, process.env.JWT_SECRET);
       } catch (err) {
-        return res.status(401).send({ message: "Unauthorized" });
+        return res.status(httpCode.UNAUTHORIZED).send({ message: "Unauthorized" });
       }
       const user = await UserSchema.findById((payload).uid);
       const session = await SessionModel.findById((payload).sid);
       if (!user) {
-        return res.status(404).send({ message: "Invalid user" });
+        return res.status(httpCode.NOT_FOUND).send({ message: "Invalid user" });
       }
       if (!session) {
-        return res.status(404).send({ message: "Invalid session" });
+        return res.status(httpCode.NOT_FOUND).send({ message: "Invalid session" });
       }
-      return res.status(200).send({
+      return res.status(httpCode.OK).send({
         status: 'success',
-        code: 200,
+        code: httpCode.OK,
         data: {
           id: user.id,
           name: user.name,
@@ -224,14 +224,14 @@ const getCurrentUser = async (req, res, next) => {
       });
 
 
-    } else return res.status(400).send({ message: "No token provided" });
+    } else return res.status(httpCode.BAD_REQUEST).send({ message: "No token provided" });
   } catch (e) {
     next(e.message)
   }
 };
 const verify = async (req, res, next) => {
   try {
-    const user = await new UsersRepository().findByVerifyToken(
+    const user = await userRepository.findByVerifyToken(
       req.params.token,
     );
 
@@ -291,6 +291,75 @@ const repeatEmailVerification = async (req, res, next) => {
   }
 };
 
+const googleAuth = async (req, res) => {
+  const stringifiedParams = queryString.stringify({
+    client_id: process.env.GOOGLE_CLIENT_ID,
+    redirect_uri: `${process.env.BASE_URL}/auth/google-redirect`,
+    scope: [
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile",
+    ].join(" "),
+    response_type: "code",
+    access_type: "offline",
+    prompt: "consent",
+  });
+  return res.redirect(
+    `https://accounts.google.com/o/oauth2/v2/auth?${stringifiedParams}`
+  );
+};
+
+const googleRedirect = async (req, res) => {
+  const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
+  const urlObj = new URL(fullUrl);
+  const urlParams = queryString.parse(urlObj.search);
+  const code = urlParams.code;
+  const tokenData = await axios({
+    url: `https://oauth2.googleapis.com/token`,
+    method: "post",
+    data: {
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      redirect_uri: `${process.env.BASE_URL}/auth/google-redirect`,
+      grant_type: "authorization_code",
+      code,
+    },
+  });
+  const userData = await axios({
+    url: "https://www.googleapis.com/oauth2/v2/userinfo",
+    method: "get",
+    headers: {
+      Authorization: `Bearer ${tokenData.data.access_token}`,
+    },
+  });
+  let existingParent = await UserModel.findOne({ email: userData.data.email });
+  if (!existingParent || !existingParent.originUrl) {
+    return res.status(403).send({
+      message:
+        "You should register from front-end first (not postman). Google are only for sign-in",
+    });
+  }
+  const newSession = await SessionModel.create({
+    uid: existingParent._id,
+  });
+  const accessToken = jwt.sign(
+    { uid: existingParent._id, sid: newSession._id },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_ACCESS_EXPIRE_TIME,
+    }
+  );
+  const refreshToken = jwt.sign(
+    { uid: existingParent._id, sid: newSession._id },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_REFRESH_EXPIRE_TIME,
+    }
+  );
+  return res.redirect(
+    `${existingParent.originUrl}?accessToken=${accessToken}&refreshToken=${refreshToken}&sid=${newSession._id}`
+  );
+};
+
 module.exports = {
   signup,
   login,
@@ -300,4 +369,6 @@ module.exports = {
   getCurrentUser,
   verify,
   repeatEmailVerification,
+  googleAuth,
+  googleRedirect
 };
