@@ -1,2 +1,2 @@
 const { UsersRepository } = require('./user');
-module.exports = UsersRepository;
+module.exports = { UsersRepository };

@@ -6,6 +6,9 @@ const {
   getAllLines,
   getBalanceCtrl,
 } = require('../../../controllers/currencyMovements');
+
+const { getSummary } = require('../../../controllers');
+
 const asyncWrapper = require('../../../helpers/asyncWrapper');
 const { validationCurrencyMovement } = require('./validation');
 
@@ -20,5 +23,9 @@ router.get('/expends', asyncWrapper(getAllLines));
 router.get('/adjustments', asyncWrapper(getAllLines));
 router.post('/adjustments', asyncWrapper(createLine));
 router.get('/balance', asyncWrapper(getBalanceCtrl));
+
+router.get('/summaryExpenses', asyncWrapper(getSummary));
+
+router.get('/summaryIncome', asyncWrapper(getSummary));
 
 module.exports = router;
