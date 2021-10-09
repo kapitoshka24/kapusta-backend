@@ -19,7 +19,6 @@ class AuthService {
     const id = user.id;
     const payload = { id };
     const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '1h' });
-    console.log(token);
     await this.repositories.users.updateToken(id, token);
     return token;
   }
