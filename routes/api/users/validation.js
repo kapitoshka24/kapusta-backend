@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const mongoose = require('mongoose')
 const { httpCode } = require('../../../helpers/constants');
 
 const schemaRegistrationUser = Joi.object({
@@ -27,6 +28,10 @@ const schemaLoginUser = Joi.object({
     .required(),
 });
 
+const refreshTokensSchema = Joi.object({
+  sid: Joi.string().required()
+});
+
 const validate = async (schema, obj, next, errorMsg) => {
   try {
     await schema.validateAsync(obj);
@@ -40,6 +45,15 @@ const validate = async (schema, obj, next, errorMsg) => {
 };
 
 module.exports = {
+  validateRefreshToken: (req, _, next) => {
+    return validate(
+      refreshTokensSchema,
+      req.body,
+      next,
+      'sid must be string'
+
+    )
+  },
   validationRegistrationUser: (req, _, next) => {
     return validate(
       schemaRegistrationUser,
@@ -56,4 +70,5 @@ module.exports = {
       'Invalid credentials or missing required fields',
     );
   },
+
 };
