@@ -16,7 +16,7 @@ router.post(
   controllerUser.signup,
 );
 router.post('/login', validationLoginUser, controllerUser.login);
-router.post('/logout', guard, controllerUser.logout);
+router.get('/logout', guard, controllerUser.logout);
 
 router.get('/verify/:token', controllerUser.verify);
 router.post('/verify', controllerUser.repeatEmailVerification);
