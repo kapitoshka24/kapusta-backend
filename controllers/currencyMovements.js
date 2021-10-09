@@ -79,7 +79,6 @@ const deleteLine = async (req, res) => {
 
 const getBalanceCtrl = async (req, res, next) => {
   const balance = await getBalance();
-  console.log(balance);
   if (balance || typeof balance === 'number') {
     return res.json({
       status: 'ok',

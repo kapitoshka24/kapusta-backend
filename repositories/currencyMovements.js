@@ -55,14 +55,42 @@ const getAll = async (query, path) => {
 };
 
 const getBalance = async () => {
-  const expendsCategories = [...expends];
-  const balance = await CurrencyMovement.find();
-  return balance.reduce((acc, { category, sum }) => {
-    if (expendsCategories.includes(category)) {
-      return acc - sum;
-    } else {
-      return acc + sum;
-    }
+  const balance = await CurrencyMovement.aggregate([
+    // { $match: { category: { $not: /adjustments/ } } },
+    {
+      $project: {
+        category: {
+          $in: ['$category', expends],
+        },
+        sum: '$sum',
+      },
+    },
+    {
+      $group: {
+        _id: '$category',
+
+        total: { $sum: '$sum' },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        totals: {
+          $cond: {
+            if: '$_id',
+            then: {
+              expends: '$total',
+            },
+            else: {
+              incomes: '$total',
+            },
+          },
+        },
+      },
+    },
+  ]);
+  return balance.reduce((acc, { totals }) => {
+    return totals.expends ? acc - totals.expends : acc + totals.incomes;
   }, 0);
 };
 
