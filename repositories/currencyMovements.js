@@ -1,13 +1,17 @@
 const { incomes, expends, adjustments } = require('../helpers/categories');
 const CurrencyMovement = require('../model/currencyMovement');
+const {
+  Types: { ObjectId },
+} = require('mongoose');
 
-const addLine = async body => {
-  return await CurrencyMovement.create({ ...body });
+const addLine = async (userId, body) => {
+  return await CurrencyMovement.create({ ...body, owner: userId });
 };
 
-const update = async (lineId, body) => {
+const update = async (userId, lineId, body) => {
   const updatedLine = await CurrencyMovement.findOneAndUpdate(
     {
+      owner: userId,
       _id: lineId,
     },
     { ...body },
@@ -16,8 +20,9 @@ const update = async (lineId, body) => {
   return updatedLine;
 };
 
-const delLine = async lineId => {
+const delLine = async (userId, lineId) => {
   const deletedLine = await CurrencyMovement.findOneAndRemove({
+    owner: userId,
     _id: lineId,
   });
   if (deletedLine) {
@@ -26,28 +31,52 @@ const delLine = async lineId => {
   return '';
 };
 
-const getAll = async (query, path) => {
-  const { limit = 20, page = 1 } = query;
-
-  const checkType = path => {
-    if (path === 'incomes') {
-      return incomes;
-    }
-    if (path === 'expends') {
-      return expends;
+const getAll = async (userId, query, path) => {
+  const { limit = 20, page = 1, category, sortBy, sortByDesc } = query;
+  const getOptions = (path, category) => {
+    const searchingCategories = [];
+    if (!path) {
+      return {
+        owner: userId,
+      };
     }
     if (path === 'adjustments') {
-      return adjustments;
+      if (category) {
+        adjustments.includes(category)
+          ? searchingCategories.push(category)
+          : [];
+      } else {
+        searchingCategories.push(...adjustments);
+      }
     }
+    if (path === 'incomes') {
+      if (category) {
+        incomes.includes(category) && searchingCategories.push(category);
+      } else {
+        searchingCategories.push(...incomes);
+      }
+    }
+    if (path === 'expends') {
+      if (category) {
+        expends.includes(category) && searchingCategories.push(category);
+      } else {
+        searchingCategories.push(...expends);
+      }
+    }
+    return {
+      owner: userId,
+      category: { $in: searchingCategories },
+    };
   };
 
-  const options = path ? { category: { $in: checkType(path) } } : '';
-
+  const options = getOptions(path, category);
   const lines = await CurrencyMovement.paginate(options, {
     page,
     limit,
     sort: {
-      date: -1,
+      ...(!sortBy && !sortByDesc ? { date: -1 } : {}),
+      ...(sortBy ? { [`${sortBy}`]: 1 } : {}),
+      ...(sortByDesc ? { [`${sortByDesc}`]: -1 } : {}),
     },
   });
 
@@ -87,9 +116,9 @@ const getSummaryYear = async (year, pathСheck) => {
   return SummaryYear;
 };
 
-const getBalance = async () => {
+const getBalance = async userId => {
   const balance = await CurrencyMovement.aggregate([
-    // { $match: { category: { $not: /adjustments/ } } },
+    { $match: { owner: ObjectId(userId) } },
     {
       $project: {
         category: {
