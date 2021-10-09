@@ -4,7 +4,7 @@ const {
   EmailService,
   CreateSenderNodemailer,
 } = require('../services');
-const { UsersRepository } = require('../repositories/user');
+const  UsersRepository  = require('../repositories');
 const { httpCode } = require('../helpers/constants');
 
 require('dotenv').config();
@@ -41,7 +41,7 @@ const signup = async (req, res, next) => {
         newUser.name,
       );
     } catch (error) {
-      console.log(error.message);
+      error.message;
     }
 
     return res.status(httpCode.CREATED).json({
