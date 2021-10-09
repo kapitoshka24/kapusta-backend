@@ -12,6 +12,8 @@ const { getSummary } = require('../../../controllers');
 const asyncWrapper = require('../../../helpers/asyncWrapper');
 const { validationCurrencyMovement } = require('./validation');
 
+const { getdetailedCategories } = require('../../../controllers');
+
 const router = express.Router();
 
 router.post('/create', validationCurrencyMovement, asyncWrapper(createLine));
@@ -27,5 +29,7 @@ router.get('/balance', asyncWrapper(getBalanceCtrl));
 router.get('/summaryExpenses', asyncWrapper(getSummary));
 
 router.get('/summaryIncome', asyncWrapper(getSummary));
+
+router.get('/detailedCategories', asyncWrapper(getdetailedCategories));
 
 module.exports = router;

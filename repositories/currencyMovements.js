@@ -127,11 +127,41 @@ const getBalance = async () => {
   }, 0);
 };
 
+const getDetailedInfoCategories = async (category, dateSplit) => {
+  const detailedInfoCategories = await CurrencyMovement.aggregate([
+    {
+      $project: {
+        month: { $month: '$date' },
+        year: { $year: '$date' },
+        name: '$name',
+        category: '$category',
+        sum: '$sum',
+      },
+    },
+    {
+      $match: {
+        category: category,
+        month: +dateSplit[0],
+        year: +dateSplit[1],
+      },
+    },
+    {
+      $group: {
+        _id: '$name',
+        sum: { $sum: '$sum' },
+      },
+    },
+  ]);
+
+  return detailedInfoCategories;
+};
+
 module.exports = {
   addLine,
   update,
   delLine,
   getAll,
-  getBalance,
   getSummaryYear,
+  getBalance,
+  getDetailedInfoCategories,
 };
