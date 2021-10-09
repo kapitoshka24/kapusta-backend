@@ -5,7 +5,7 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 const currencyMovement = new Schema(
   {
     date: {
-      type: String,
+      type: Date,
       required: [true, 'Set date'],
     },
     name: {

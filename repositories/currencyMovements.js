@@ -26,7 +26,7 @@ const delLine = async lineId => {
   return '';
 };
 
-const getAllLines = async (query, path) => {
+const getAll = async (query, path) => {
   const { limit = 20, page = 1 } = query;
 
   const checkType = path => {
@@ -41,7 +41,7 @@ const getAllLines = async (query, path) => {
     }
   };
 
-  const options = { category: { $in: checkType(path) } };
+  const options = path ? { category: { $in: checkType(path) } } : '';
 
   const lines = await CurrencyMovement.paginate(options, {
     page,
@@ -54,4 +54,50 @@ const getAllLines = async (query, path) => {
   return lines;
 };
 
-module.exports = { addLine, update, delLine, getAllLines };
+const getBalance = async () => {
+  const balance = await CurrencyMovement.aggregate([
+    // { $match: { category: { $not: /adjustments/ } } },
+    {
+      $project: {
+        category: {
+          $in: ['$category', expends],
+        },
+        sum: '$sum',
+      },
+    },
+    {
+      $group: {
+        _id: '$category',
+
+        total: { $sum: '$sum' },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        totals: {
+          $cond: {
+            if: '$_id',
+            then: {
+              expends: '$total',
+            },
+            else: {
+              incomes: '$total',
+            },
+          },
+        },
+      },
+    },
+  ]);
+  return balance.reduce((acc, { totals }) => {
+    return totals.expends ? acc - totals.expends : acc + totals.incomes;
+  }, 0);
+};
+
+module.exports = {
+  addLine,
+  update,
+  delLine,
+  getAll,
+  getBalance,
+};
