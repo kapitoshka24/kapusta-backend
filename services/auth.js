@@ -17,17 +17,7 @@ class AuthService {
     if (!user || !(await user.validPassword(password)) || !user.isVerified) {
       return null;
     }
-    const id = user.id;
-
-    const newSession = await SessionModel.create({
-      uid: id
-    })
-    const payload = { uid: id, sid: newSession._id };
-    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '1h' });
-    const refreshToken = jwt.sign(payload, SECRET_KEY, { expiresIn: '1d' });
-
-    await this.repositories.users.updateToken(id, token,);
-    return token;
+    return user;
   }
 
   async logout(id) {

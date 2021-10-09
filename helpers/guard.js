@@ -7,7 +7,7 @@ const guard = (req, res, next) => {
     const headerAuth = req.get('Authorization');
     let token = null;
     if (headerAuth) {
-      token = headerAuth.split(' ')[1];
+      token = authorizationHeader.replace("Bearer ", "");
     }
     if (error || !user || token !== user?.token) {
       return res.status(httpCode.UNAUTHORIZED).json({
@@ -16,8 +16,9 @@ const guard = (req, res, next) => {
         message: 'Invalid credentials',
       });
     }
-    req.user = user;
-    // req.locals.user = user переменная на текущей сессии
+    // req.user = user;
+    req.locals.user = user
+    // переменная на текущей сессии
     // req.app.locals.vars - глобальная переменная
 
     return next();

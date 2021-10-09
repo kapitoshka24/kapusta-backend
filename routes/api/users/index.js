@@ -8,14 +8,16 @@ const {
   validationLoginUser,
 } = require('./validation');
 
-router.get('/current', guard, controllerUser.getCurrentUser);
+router.get('/current', controllerUser.getCurrentUser);
 router.post(
   '/registration',
+  validationRegistrationUser,
   createAccountLimiter,
-  asyncWrapper(register),
+  controllerUser.signup,
 );
-router.post('/login', validationLoginUser, asyncWrapper(login));
-router.post('/logout', guard, asyncWrapper(logout));
+router.post("/logout", controllerUser.authorize, controllerUser.logout);
+router.post('/login', validationLoginUser, controllerUser.login);
+
 
 router.get('/verify/:token', controllerUser.verify);
 router.post('/verify', controllerUser.repeatEmailVerification);
