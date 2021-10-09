@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken');
+const axios = require('axios')
+const queryString = require('query-string')
 const {
   AuthService,
   UserService,
@@ -294,7 +296,7 @@ const repeatEmailVerification = async (req, res, next) => {
 const googleAuth = async (req, res) => {
   const stringifiedParams = queryString.stringify({
     client_id: process.env.GOOGLE_CLIENT_ID,
-    redirect_uri: `${process.env.BASE_URL}/auth/google-redirect`,
+    redirect_uri: `http://localhost:3000/api/users/google-redirect`,
     scope: [
       "https://www.googleapis.com/auth/userinfo.email",
       "https://www.googleapis.com/auth/userinfo.profile",
@@ -319,7 +321,7 @@ const googleRedirect = async (req, res) => {
     data: {
       client_id: process.env.GOOGLE_CLIENT_ID,
       client_secret: process.env.GOOGLE_CLIENT_SECRET,
-      redirect_uri: `${process.env.BASE_URL}/auth/google-redirect`,
+      redirect_uri: `http://localhost:3000/api/users/google-redirect`,
       grant_type: "authorization_code",
       code,
     },
@@ -331,8 +333,10 @@ const googleRedirect = async (req, res) => {
       Authorization: `Bearer ${tokenData.data.access_token}`,
     },
   });
-  let existingParent = await UserModel.findOne({ email: userData.data.email });
-  if (!existingParent || !existingParent.originUrl) {
+
+  let existingParent = await UserSchema.findOne({ email: userData.data.email });
+  console.log(existingParent)
+  if (!existingParent) {
     return res.status(403).send({
       message:
         "You should register from front-end first (not postman). Google are only for sign-in",
