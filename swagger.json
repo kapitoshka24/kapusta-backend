@@ -95,6 +95,32 @@
         }
       }
     },
+    "/users/google": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get login with google",
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "description": "redirect on home page client with query parameters",
+                  "example": "https://kapusta-frontend.netlify.app/?accessToken=sYz4NOXqTPdT_UpQXksQQQ&refreshToken=jc2S1NZ_BPOOvGjRqNENFtxXeM&sid=61630acd13f65dd798f499d7#"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Auth only after register",
+            "content": {}
+          }
+        }
+      }
+    },
     "/users/logout": {
       "post": {
         "tags": ["User"],
@@ -160,32 +186,6 @@
           },
           "500": {
             "description": "Internal server error",
-            "content": {}
-          }
-        }
-      }
-    },
-    "/users/google": {
-      "get": {
-        "tags": ["User"],
-        "summary": "Get an information about user",
-        "security": [],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string",
-                  "description": "redirect on home page client with query parameters",
-                  "example": "https://kapusta-frontend.netlify.app/?accessToken=sYz4NOXqTPdT_UpQXksQQQ&refreshToken=jc2S1NZ_BPOOvGjRqNENFtxXeM&sid=61630acd13f65dd798f499d7#"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Auth only after register",
             "content": {}
           }
         }
