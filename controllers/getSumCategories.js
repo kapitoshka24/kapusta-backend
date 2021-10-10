@@ -1,8 +1,9 @@
+const { BadRequest } = require('http-errors');
 const { getSumCategories } = require('../repositories/currencyMovements');
 
 const SumCategories = async (req, res) => {
   const { date } = req.query;
-  const pathСheck = req.path === '/sumCategoriEexpenses';
+  const pathСheck = req.path === '/sumCategoryExpenses';
 
   if (!date) {
     throw new BadRequest();
