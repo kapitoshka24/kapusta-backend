@@ -83,10 +83,11 @@ const getAll = async (userId, query, path) => {
   return lines;
 };
 
-const getSummaryYear = async (year, pathСheck) => {
+const getSummaryYear = async (year, pathСheck, userId) => {
   const SummaryYear = await CurrencyMovement.aggregate([
     {
       $match: {
+        owner: ObjectId(userId),
         date: {
           $gte: new Date(`${+year}-01-01`),
           $lt: new Date(`${+year + 1}-01-01`),
@@ -111,6 +112,7 @@ const getSummaryYear = async (year, pathСheck) => {
         total: { $sum: '$sum' },
       },
     },
+    { $sort: { _id: 1 } },
   ]);
 
   return SummaryYear;
@@ -156,8 +158,9 @@ const getBalance = async userId => {
   }, 0);
 };
 
-const getDetailedInfoCategories = async (category, dateSplit) => {
+const getDetailedInfoCategories = async (category, dateSplit, userId) => {
   const detailedInfoCategories = await CurrencyMovement.aggregate([
+    { $match: { owner: ObjectId(userId) } },
     {
       $project: {
         month: { $month: '$date' },
@@ -185,9 +188,9 @@ const getDetailedInfoCategories = async (category, dateSplit) => {
   return detailedInfoCategories;
 };
 
-const getSumCategories = async (dateSplit, pathСheck) => {
+const getSumCategories = async (dateSplit, pathСheck, userId) => {
   const SumCategories = await CurrencyMovement.aggregate([
-    { $match: { category: { $not: /adjustments/ } } },
+    { $match: { owner: ObjectId(userId), category: { $not: /adjustments/ } } },
     {
       $project: {
         month: { $month: '$date' },

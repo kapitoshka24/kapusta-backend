@@ -1,5 +1,5 @@
 const getSummary = require('./getSummary');
-const getdetailedCategories = require('./getdetailedCategories');
+const getDetailedCategories = require('./getDetailedCategories');
 const getSumCategories = require('./getSumCategories');
 
-module.exports = { getSummary, getdetailedCategories, getSumCategories };
+module.exports = { getSummary, getDetailedCategories, getSumCategories };

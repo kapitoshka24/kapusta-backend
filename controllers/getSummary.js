@@ -8,11 +8,15 @@ const getSummary = async (req, res) => {
 
   const { year } = req.query;
 
+  const {
+    user: { id: userId },
+  } = req;
+
   if (!year) {
     throw new BadRequest('incorrect data entry');
   }
 
-  const response = await getSummaryYear(year, pathСheck);
+  const response = await getSummaryYear(year, pathСheck, userId);
 
   for (let i in response) {
     response[i]._id = monthsArray[response[i]._id - 1];
