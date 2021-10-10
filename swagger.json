@@ -67,7 +67,7 @@
         "summary": "User authorization",
         "parameters": [{ "Bearer": [] }],
         "requestBody": {
-          "description": "Authorization object with token",
+          "description": "Authorization object with tokens",
           "required": true,
           "content": {
             "application/json": {
@@ -186,6 +186,51 @@
           },
           "500": {
             "description": "Internal server error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/refresh": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Refresh token authorization",
+        "parameters": [
+          { "Bearer": [] },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Refresh token issued to the current user"
+          }
+        ],
+        "requestBody": {
+          "description": "Refresh authorization object with tokens",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/refreshRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/refreshResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid credentials",
             "content": {}
           }
         }
@@ -620,18 +665,62 @@
           "status": "success",
           "code": 200,
           "data": {
-            "status": "success",
-            "code": 200,
-            "data": {
-              "headers": {
-                "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJzk",
-                "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
-                "sid": "6162ee2cc5"
-              },
-              "email": "guest@example.com",
-              "name": "Guest",
-              "id": "6162e971"
+            "headers": {
+              "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJzk",
+              "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+              "sid": "6162ee2cc5"
+            },
+            "email": "guest@example.com",
+            "name": "Guest",
+            "id": "6162e971"
+          }
+        }
+      },
+      "refreshRequest": {
+        "type": "object",
+        "items": {
+          "type": "object",
+          "properties": {
+            "sid": {
+              "type": "string",
+              "description": "Session id"
             }
+          }
+        },
+        "example": {
+          "sid": "6162ee2cc5"
+        }
+      },
+      "refreshResponse": {
+        "type": "object",
+        "items": {
+          "type": "object",
+          "properties": {
+            "headers": {
+              "type": "object",
+              "description": "Tokens",
+              "properties": {
+                "accessToken": {
+                  "type": "string",
+                  "description": "Token for access"
+                },
+                "refreshToken": {
+                  "type": "string",
+                  "description": "Token for refresh session"
+                },
+                "sid": {
+                  "type": "string",
+                  "description": "Session id"
+                }
+              }
+            }
+          }
+        },
+        "example": {
+          "headers": {
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJzk",
+            "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+            "sid": "6162ee2cc5"
           }
         }
       },
