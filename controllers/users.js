@@ -4,7 +4,7 @@ const {
   EmailService,
   CreateSenderNodemailer,
 } = require('../services');
-const { UsersRepository } = require('../repositories');
+const UsersRepository = require('../repositories');
 const { httpCode } = require('../helpers/constants');
 
 require('dotenv').config();
@@ -97,29 +97,30 @@ const logout = async (req, res, next) => {
 
 const getCurrentUser = async (req, res, next) => {
   try {
-    const id = req.user.id
-    if (id) {
+    const id = req.user.id;
 
-      const { name, email } = await serviceUser.findById(id)
-
-      return res.status(HttpCode.OK).json({
-        status: 'success',
-        code: httpCode.OK,
-        data: {
-          name,
-          email
-        }
-      })
+    if (!id) {
+      return res.status(httpCode.UNAUTHORIZED).json({
+        status: 'error',
+        code: httpCode.UNAUTHORIZED,
+        message: 'Not authorized',
+      });
     }
-    next({
-      status: httpCode.UNAUTHORIZED,
-      message: 'Not authorized'
-    })
-  } catch (e) {
-    next(e)
-  }
 
-}
+    const { name, email } = await serviceUser.findById(id);
+
+    return res.status(httpCode.OK).json({
+      status: 'success',
+      code: httpCode.OK,
+      data: {
+        name,
+        email,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 const verify = async (req, res, next) => {
   try {
