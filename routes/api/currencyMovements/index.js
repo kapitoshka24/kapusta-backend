@@ -9,13 +9,12 @@ const {
 
 const {
   getSummary,
-  getdetailedCategories,
+  getDetailedCategories,
   getSumCategories,
 } = require('../../../controllers');
 
 const asyncWrapper = require('../../../helpers/asyncWrapper');
 const { validationCurrencyMovement } = require('./validation');
-
 const { guard } = require('../../../helpers');
 const router = express.Router();
 
@@ -34,14 +33,14 @@ router.get('/adjustments', guard, asyncWrapper(getAllLines));
 router.post('/adjustments', guard, asyncWrapper(createLine));
 router.get('/balance', guard, asyncWrapper(getBalanceCtrl));
 
-router.get('/summaryExpenses', asyncWrapper(getSummary));
+router.get('/summaryExpenses', guard, asyncWrapper(getSummary));
 
-router.get('/summaryIncome', asyncWrapper(getSummary));
+router.get('/summaryIncome', guard, asyncWrapper(getSummary));
 
-router.get('/detailedCategories', asyncWrapper(getdetailedCategories));
+router.get('/detailedCategories', guard, asyncWrapper(getDetailedCategories));
 
-router.get('/sumCategoriEexpenses', asyncWrapper(getSumCategories));
+router.get('/sumCategoryExpenses', guard, asyncWrapper(getSumCategories));
 
-router.get('/sumCategoriIncome', asyncWrapper(getSumCategories));
+router.get('/sumCategoryIncome', guard, asyncWrapper(getSumCategories));
 
 module.exports = router;
