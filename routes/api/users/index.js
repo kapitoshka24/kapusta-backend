@@ -1,6 +1,6 @@
 const express = require('express');
 const controllerUser = require('../../../controllers/users')
-const { createAccountLimiter, asyncWrapper } = require('../../../helpers');
+const { createAccountLimiter, asyncWrapper, guard } = require('../../../helpers');
 const router = express.Router();
 const {
   validationRegistrationUser,
@@ -15,13 +15,13 @@ router.post(
   createAccountLimiter,
   controllerUser.signup,
 );
-router.post("/logout", controllerUser.authorize, controllerUser.logout);
+router.post("/logout", guard, controllerUser.authorize, controllerUser.logout);
 router.post('/login', validationLoginUser, controllerUser.login);
 router.post("/refresh", validateRefreshToken, controllerUser.refreshTokens);
 router.get('/verify/:token', controllerUser.verify);
 router.post('/verify', controllerUser.repeatEmailVerification);
 router.get("/google", asyncWrapper(controllerUser.googleAuth));
 router.get("/google-redirect", asyncWrapper(controllerUser.googleRedirect));
-router.get('/current', controllerUser.getCurrentUser);
+router.get('/current', guard, controllerUser.getCurrentUser);
 
 module.exports = router;
