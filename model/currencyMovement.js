@@ -1,11 +1,11 @@
-const { Schema, model } = require('mongoose');
+const { Schema, SchemaTypes, model } = require('mongoose');
 const { categories } = require('../helpers/categories');
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 const currencyMovement = new Schema(
   {
     date: {
-      type: String,
+      type: Date,
       required: [true, 'Set date'],
     },
     name: {
@@ -20,6 +20,10 @@ const currencyMovement = new Schema(
     sum: {
       type: Number,
       required: true,
+    },
+    owner: {
+      type: SchemaTypes.ObjectId,
+      ref: 'user',
     },
   },
   {

@@ -1,2 +1,3 @@
-const { UsersRepository } = require('./user');
+const UsersRepository = require('./user');
 module.exports = { UsersRepository };
+

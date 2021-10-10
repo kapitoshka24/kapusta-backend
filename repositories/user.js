@@ -30,4 +30,4 @@ class UsersRepository {
   }
 }
 
-module.exports = { UsersRepository };
+module.exports = UsersRepository;

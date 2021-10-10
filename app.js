@@ -1,4 +1,6 @@
 const express = require('express');
+const swaggerUi = require('swagger-ui-express')
+const swaggerDocument = require('./swagger.json')
 const logger = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -6,6 +8,8 @@ const rateLimit = require('express-rate-limit');
 const { jsonLimit } = require('./config/rate-limit.json');
 const boolParser = require('express-query-boolean');
 const { httpCode, limiterAPI } = require('./helpers/constants');
+
+const currencyMovements = require('./routes/api');
 require('dotenv').config();
 const path = require('path')
 
@@ -22,8 +26,11 @@ app.use(boolParser());
 
 app.use('/api/', rateLimit(limiterAPI));
 app.use('/api/', require('./routes/api'));
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
-app.use('/', (req, res) => { res.sendFile(path.join(__dirname, 'index.html')) })
+// app.use('/api/currencyMovements', currencyMovements);
+
+// app.use('/', (req, res) => { res.sendFile(path.join(__dirname, 'index.html')) })
 
 app.use((_, res) => {
   res
