@@ -185,6 +185,38 @@ const getDetailedInfoCategories = async (category, dateSplit) => {
   return detailedInfoCategories;
 };
 
+const getSumCategories = async (dateSplit, pathСheck) => {
+  const SumCategories = await CurrencyMovement.aggregate([
+    { $match: { category: { $not: /adjustments/ } } },
+    {
+      $project: {
+        month: { $month: '$date' },
+        year: { $year: '$date' },
+        category: '$category',
+        sum: '$sum',
+        categoryValidate: {
+          $in: ['$category', pathСheck ? expends : incomes],
+        },
+      },
+    },
+    {
+      $match: {
+        categoryValidate: true,
+        month: +dateSplit[0],
+        year: +dateSplit[1],
+      },
+    },
+    {
+      $group: {
+        _id: '$category',
+        total: { $sum: '$sum' },
+      },
+    },
+  ]);
+
+  return SumCategories;
+};
+
 module.exports = {
   addLine,
   update,
@@ -193,4 +225,5 @@ module.exports = {
   getSummaryYear,
   getBalance,
   getDetailedInfoCategories,
+  getSumCategories,
 };
