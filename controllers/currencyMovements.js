@@ -11,12 +11,16 @@ const {
 } = require('../repositories/currencyMovements');
 
 const createLine = async (req, res) => {
-  const { body } = req;
+  const {
+    user: { id: userId },
+    body,
+  } = req;
+
   const { date, name, category: categoryReq, sum: sumReq } = body;
   if (adjustments.includes(categoryReq)) {
-    const oldBalance = await getBalance();
+    const oldBalance = await getBalance(userId);
     const correctBalance = sumReq - oldBalance;
-    const createdLine = await addLine({
+    const createdLine = await addLine(userId, {
       date,
       name,
       category: categoryReq,
@@ -24,7 +28,7 @@ const createLine = async (req, res) => {
     });
     res.line = createdLine;
   } else {
-    const createdLine = await addLine(body);
+    const createdLine = await addLine(userId, body);
     res.line = createdLine;
   }
 
@@ -39,20 +43,21 @@ const createLine = async (req, res) => {
 
 const updateLine = async (req, res, next) => {
   const {
+    user: { id: userId },
     body,
     params: { lineId },
   } = req;
   const { name: reqName, sum: reqSum } = body;
-  if (reqName || reqSum) {
-    const { date, name, category, sum } = await update(lineId, {
-      name: reqName,
-      sum: reqSum,
-    });
+  const createdLine = await update(userId, lineId, {
+    name: reqName,
+    sum: reqSum,
+  });
+  if (createdLine && (reqName || reqSum)) {
     return res.json({
       status: 'ok',
       code: 200,
       data: {
-        createdLine: { date, name, category, sum },
+        createdLine,
       },
     });
   }
@@ -63,8 +68,12 @@ const updateLine = async (req, res, next) => {
 };
 
 const deleteLine = async (req, res) => {
-  const { lineId } = req.params;
-  const message = await delLine(lineId);
+  const {
+    user: { id: userId },
+    params,
+  } = req;
+  const { lineId } = params;
+  const message = await delLine(userId, lineId);
   if (message) {
     return res.json({
       status: 'ok',
@@ -78,7 +87,10 @@ const deleteLine = async (req, res) => {
 };
 
 const getBalanceCtrl = async (req, res, next) => {
-  const balance = await getBalance();
+  const {
+    user: { id: userId },
+  } = req;
+  const balance = await getBalance(userId);
   if (balance || typeof balance === 'number') {
     return res.json({
       status: 'ok',
@@ -95,9 +107,13 @@ const getBalanceCtrl = async (req, res, next) => {
 };
 
 const getAllLines = async (req, res, next) => {
-  const { query, path } = req;
+  const {
+    user: { id: userId },
+    query,
+    path,
+  } = req;
   const pathName = path?.slice(1);
-  const { docs: lines } = await getAll(query, pathName);
+  const { docs: lines } = await getAll(userId, query, pathName);
   if (lines.length > 0) {
     return res.json({
       status: 'ok',
