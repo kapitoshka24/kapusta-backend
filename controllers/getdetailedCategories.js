@@ -6,12 +6,16 @@ const {
 const detailedInfoCategories = async (req, res) => {
   const { category, date } = req.query;
 
+  const {
+    user: { id: userId },
+  } = req;
+
   if (!date) {
     throw new BadRequest();
   }
   const dateSplit = date.split('/');
 
-  const response = await getDetailedInfoCategories(category, dateSplit);
+  const response = await getDetailedInfoCategories(category, dateSplit, userId);
 
   if (response.length === 0) {
     res.status(200).json({

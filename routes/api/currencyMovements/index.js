@@ -33,14 +33,14 @@ router.get('/adjustments', guard, asyncWrapper(getAllLines));
 router.post('/adjustments', guard, asyncWrapper(createLine));
 router.get('/balance', guard, asyncWrapper(getBalanceCtrl));
 
-router.get('/summaryExpenses', asyncWrapper(getSummary));
+router.get('/summaryExpenses', guard, asyncWrapper(getSummary));
 
-router.get('/summaryIncome', asyncWrapper(getSummary));
+router.get('/summaryIncome', guard, asyncWrapper(getSummary));
 
-router.get('/detailedCategories', asyncWrapper(getDetailedCategories));
+router.get('/detailedCategories', guard, asyncWrapper(getDetailedCategories));
 
-router.get('/sumCategoryExpenses', asyncWrapper(getSumCategories));
+router.get('/sumCategoryExpenses', guard, asyncWrapper(getSumCategories));
 
-router.get('/sumCategoryIncome', asyncWrapper(getSumCategories));
+router.get('/sumCategoryIncome', guard, asyncWrapper(getSumCategories));
 
 module.exports = router;
