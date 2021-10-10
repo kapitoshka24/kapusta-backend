@@ -27,10 +27,11 @@ mongoose.connection.on('disconnected', () =>
   console.log(message.DB_CONNECT_TERMINATED),
 );
 
-process.on('SIGINT', async () => {
-  const client = await db;
-  client.close();
-  process.exit(1);
-});
+process.on('SIGINT', () => {
+  mongoose.connection.close(() => {
+    console.log('Connection for DB disconnected and terminated')
+    process.exit(1)
+  })
+})
 
 module.exports = db;
