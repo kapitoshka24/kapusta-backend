@@ -292,7 +292,6 @@ const repeatEmailVerification = async (req, res, next) => {
     next(error);
   }
 };
-
 const googleAuth = async (req, res) => {
   const stringifiedParams = queryString.stringify({
     client_id: process.env.GOOGLE_CLIENT_ID,
@@ -309,7 +308,6 @@ const googleAuth = async (req, res) => {
     `https://accounts.google.com/o/oauth2/v2/auth?${stringifiedParams}`
   );
 };
-
 const googleRedirect = async (req, res) => {
   const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
   const urlObj = new URL(fullUrl);
@@ -360,7 +358,7 @@ const googleRedirect = async (req, res) => {
     }
   );
   return res.redirect(
-    `${existingParent.originUrl}?accessToken=${accessToken}&refreshToken=${refreshToken}&sid=${newSession._id}`
+    `${process.env.LINK_THIS_APP_FRONT}?accessToken=${accessToken}&refreshToken=${refreshToken}&sid=${newSession._id}`
   );
 };
 
