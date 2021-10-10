@@ -6,4 +6,4 @@ class ErrorHandler extends Error {
     this.data = data;
   }
 }
-module.exports = ErrorHandler;
+module.exports = { ErrorHandler };

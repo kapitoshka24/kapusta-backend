@@ -15,4 +15,4 @@ const createAccountLimiter = rateLimit({
   },
 });
 
-module.exports = createAccountLimiter;
+module.exports = { createAccountLimiter };

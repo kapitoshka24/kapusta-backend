@@ -1,7 +1,5 @@
-const UsersRepository = require('../repositories');
-const jwt = require('jsonwebtoken');
+const { UsersRepository } = require('../repositories');
 require('dotenv').config();
-const SECRET_KEY = process.env.SECRET_KEY;
 
 class AuthService {
   constructor() {
@@ -12,15 +10,10 @@ class AuthService {
 
   async login({ email, password }) {
     const user = await this.repositories.users.findByEmail(email);
-
     if (!user || !(await user.validPassword(password)) || !user.isVerified) {
       return null;
     }
-    const id = user.id;
-    const payload = { id };
-    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '1h' });
-    await this.repositories.users.updateToken(id, token);
-    return token;
+    return user;
   }
 
   async logout(id) {

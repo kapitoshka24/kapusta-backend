@@ -15,7 +15,7 @@ const {
 
 const asyncWrapper = require('../../../helpers/asyncWrapper');
 const { validationCurrencyMovement } = require('./validation');
-const { getdetailedCategories } = require('../../../controllers');
+
 const { guard } = require('../../../helpers');
 const router = express.Router();
 
