@@ -61,6 +61,34 @@
         }
       }
     },
+    "/users/verify": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Resubmit email for verify",
+        "parameters": [],
+        "requestBody": {
+          "description": "Resubmit email for verify",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          }
+        }
+      }
+    },
     "/users/login": {
       "post": {
         "tags": ["User"],
@@ -620,6 +648,17 @@
             "type": "string",
             "description": "User's password",
             "example": "qwerty123"
+          }
+        }
+      },
+      "VerifyRequest": {
+        "type": "object",
+        "required": ["email"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
           }
         }
       },
