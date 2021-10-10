@@ -112,6 +112,7 @@ const getSummaryYear = async (year, pathСheck, userId) => {
         total: { $sum: '$sum' },
       },
     },
+    { $sort: { _id: 1 } },
   ]);
 
   return SummaryYear;
