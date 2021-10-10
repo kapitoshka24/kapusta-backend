@@ -3,6 +3,11 @@ const { getSumCategories } = require('../repositories/currencyMovements');
 
 const SumCategories = async (req, res) => {
   const { date } = req.query;
+
+  const {
+    user: { id: userId },
+  } = req;
+
   const pathСheck = req.path === '/sumCategoryExpenses';
 
   if (!date) {
@@ -11,7 +16,7 @@ const SumCategories = async (req, res) => {
 
   const dateSplit = date.split('/');
 
-  const response = await getSumCategories(dateSplit, pathСheck);
+  const response = await getSumCategories(dateSplit, pathСheck, userId);
 
   if (response.length === 0) {
     res.status(200).json({
