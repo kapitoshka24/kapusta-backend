@@ -334,7 +334,7 @@ const googleRedirect = async (req, res) => {
     },
   });
 
-  let existingParent = await UserSchema.findOne({ email: userData.data.email });
+  const existingParent = await UserSchema.findOne({ email: userData.data.email });
   console.log(existingParent)
   if (!existingParent) {
     return res.status(403).send({

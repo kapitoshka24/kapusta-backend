@@ -5,7 +5,7 @@ module.exports = {
     node: true,
   },
   extends: ['standard', 'plugin:json/recommended', 'prettier'],
-  parser: '@babel/eslint-parser',
+  parser: 'babel-eslint',
   parserOptions: {
     ecmaVersion: 12,
   },

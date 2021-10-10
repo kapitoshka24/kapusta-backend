@@ -18,7 +18,7 @@ const getSummary = async (req, res) => {
 
   const response = await getSummaryYear(year, pathСheck, userId);
 
-  for (let i in response) {
+  for (const i in response) {
     response[i]._id = monthsArray[response[i]._id - 1];
   }
 

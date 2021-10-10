@@ -1,7 +1,6 @@
 const passport = require('passport');
 require('../config/passport');
 const { httpCode } = require('./constants');
-const jwt = require('jsonwebtoken');
 require('dotenv').config()
 
 

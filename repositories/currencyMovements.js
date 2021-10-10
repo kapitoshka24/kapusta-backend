@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 const { incomes, expends, adjustments } = require('../helpers/categories');
 const CurrencyMovement = require('../model/currencyMovement');
 const {
