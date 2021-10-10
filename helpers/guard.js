@@ -1,15 +1,13 @@
 const passport = require('passport');
 require('../config/passport');
 const { httpCode } = require('./constants');
+const jwt = require('jsonwebtoken');
+require('dotenv').config()
+
 
 const guard = (req, res, next) => {
   passport.authenticate('jwt', { session: false }, (error, user) => {
-    const headerAuth = req.get('Authorization');
-    let token = null;
-    if (headerAuth) {
-      token = headerAuth.split(' ')[1];
-    }
-    if (error || !user || token !== user?.token) {
+    if (error || !user) {
       return res.status(httpCode.UNAUTHORIZED).json({
         status: 'error',
         code: httpCode.UNAUTHORIZED,

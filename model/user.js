@@ -19,14 +19,10 @@ const userSchema = new Schema(
       type: String,
       required: [true, 'Email is required'],
       unique: true,
-      //   validate(value) {
-      //     const re = /\S+@\S+\.\S+/;
-      //     return re.test(String(value).toLowerCase());
-      //   },
-    },
-    token: {
-      type: String,
-      default: null,
+      validate(value) {
+        const re = /\S+@\S+\.\S+/;
+        return re.test(String(value).toLowerCase());
+      },
     },
     isVerified: {
       type: Boolean,

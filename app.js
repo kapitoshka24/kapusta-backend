@@ -11,6 +11,7 @@ const { httpCode, limiterAPI } = require('./helpers/constants');
 
 const currencyMovements = require('./routes/api');
 require('dotenv').config();
+const path = require('path')
 
 const app = express();
 
@@ -28,6 +29,8 @@ app.use('/api/', require('./routes/api'));
 app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // app.use('/api/currencyMovements', currencyMovements);
+
+// app.use('/', (req, res) => { res.sendFile(path.join(__dirname, 'index.html')) })
 
 app.use((_, res) => {
   res
