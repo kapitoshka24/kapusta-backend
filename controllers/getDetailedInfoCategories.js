@@ -3,6 +3,7 @@ const { BadRequest } = require('http-errors');
 const {
   getDetailedInfoCategories,
 } = require('../repositories/currencyMovements');
+
 const detailedInfoCategories = async (req, res) => {
   const { category, date } = req.query;
 
