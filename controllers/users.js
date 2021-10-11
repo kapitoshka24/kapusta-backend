@@ -257,22 +257,16 @@ const verify = async (req, res, next) => {
     const user = await userRepository.findByVerifyToken(req.params.token);
 
     if (!user) {
-      return res.status(httpCode.BAD_REQUEST).json({
-        status: 'error',
-        code: httpCode.BAD_REQUEST,
-        message: 'Verification token is valid',
-      });
+      return res.redirect(
+        `${process.env.LINK_THIS_APP_FRONT}?verifyToken=false`
+      );
     }
 
     await new UsersRepository().updateTokenVerify(user.id, true, null);
 
-    return res.status(httpCode.OK).json({
-      status: 'success',
-      code: httpCode.OK,
-      data: {
-        message: 'Verification successful!',
-      },
-    });
+    return res.redirect(
+      `${process.env.LINK_THIS_APP_FRONT}?verifyToken=true`
+    );
   } catch (error) {
     next(error);
   }
