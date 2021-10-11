@@ -24,7 +24,7 @@ app.use(boolParser());
 
 app.use('/api/', rateLimit(limiterAPI));
 app.use('/api/', require('./routes/api'));
-app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
 app.use((_, res) => {
