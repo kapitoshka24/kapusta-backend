@@ -264,6 +264,35 @@
         }
       }
     },
+    "/currencymovements": {
+      "get": {
+        "tags": ["Currency-movement"],
+        "summary": "Get all currency movements",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "operation",
+            "description": "limit по умолчанию 20, page по умолчанию 1,category название категории из доходов или расходов. Категория доходов в расходах и наоборот не находится.sortBy или sortByDesc -- указать название поля для сортировки (_id, date, name, category, sum, createdAt ,  updatedAt). По умолчанию сортировка по убыванию по полю date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrencyMovementsAllResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Empty array",
+            "content": {}
+          }
+        }
+      }
+    },
     "/currencymovements/create": {
       "post": {
         "tags": ["Currency-movement"],
@@ -312,7 +341,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "User id"
+            "description": "нужно указать id строки в журнале"
           }
         ],
         "responses": {
@@ -327,12 +356,70 @@
         }
       }
     },
+    "/currencymovements/balance": {
+      "get": {
+        "tags": ["Currency-movement"],
+        "summary": "Get currency balance",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCurrencyBalanceResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          }
+        }
+      }
+    },
     "/currencymovements/incomes": {
       "get": {
         "tags": ["Currency-movement"],
         "summary": "Get currency incomes",
         "security": [{ "Bearer": [] }],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "operation",
+            "description": "limit по умолчанию 20, page по умолчанию 1,category название категории из доходов или расходов. Категория доходов в расходах и наоборот не находится.sortBy или sortByDesc -- указать название поля для сортировки (_id, date, name, category, sum, createdAt ,  updatedAt). По умолчанию сортировка по убыванию по полю date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCurrencyIncomes"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Empty array",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/currencymovements/adjustments": {
+      "get": {
+        "tags": ["Currency-movement"],
+        "summary": "Get currency adjustments",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "operation",
+            "description": "limit по умолчанию 20, page по умолчанию 1,category название категории из доходов или расходов. Категория доходов в расходах и наоборот не находится.sortBy или sortByDesc -- указать название поля для сортировки (_id, date, name, category, sum, createdAt ,  updatedAt). По умолчанию сортировка по убыванию по полю date"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -351,10 +438,10 @@
         }
       }
     },
-    "/currencymovements/adjustments": {
+    "/currencymovements/totalMonths": {
       "get": {
         "tags": ["Currency-movement"],
-        "summary": "Get currency adjustments",
+        "summary": "Get currency total months",
         "security": [{ "Bearer": [] }],
         "parameters": [],
         "responses": {
@@ -363,13 +450,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetCurrencyIncomes"
+                  "$ref": "#/components/schemas/GetCurrencyTotalMonth"
                 }
               }
             }
           },
-          "404": {
-            "description": "Not found",
+          "204": {
+            "description": "Empty array",
             "content": {}
           }
         }
@@ -790,6 +877,82 @@
           "data": { "id": "1", "name": "Guest", "email": "guest@example.com" }
         }
       },
+      "CurrencyMovementsAllResponse": {
+        "type": "object",
+        "items": {
+          "type": "object",
+          "properties": {
+            "status": "ok",
+            "code": 200,
+            "data": {
+              "type": "object",
+              "description": "data",
+              "properties": {
+                "expends": {
+                  "type": "object",
+                  "description": "expends",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": " id element"
+                    },
+                    "date": {
+                      "type": "string",
+                      "description": " date for element"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": " name element"
+                    },
+                    "category": {
+                      "type": "string",
+                      "description": " category element"
+                    },
+                    "sum": {
+                      "type": "string",
+                      "description": " sum for element"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "description": " Time create element"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "description": " Time update element"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "example": {
+          "status": "ok",
+          "code": 200,
+          "data": {
+            "expends": [
+              {
+                "_id": "615b256fea6ca16163b49323",
+                "date": "02.10.2021",
+                "name": "meat",
+                "category": "products",
+                "sum": 200,
+                "createdAt": "2021-10-04T16:01:51.615Z",
+                "updatedAt": "2021-10-04T16:01:51.615Z"
+              },
+              {
+                "_id": "615b5a8e3c16e5000e14c99f",
+                "date": "02.10.2021",
+                "name": "meat",
+                "category": "products",
+                "sum": 250,
+                "createdAt": "2021-10-04T19:48:30.798Z",
+                "updatedAt": "2021-10-04T19:48:30.798Z"
+              }
+            ]
+          }
+        }
+      },
       "CurrencyMovementRequest": {
         "type": "object",
         "required": ["date", "name", "category", "sum"],
@@ -811,7 +974,7 @@
           },
           "sum": {
             "type": "integer",
-            "description": "sum category",
+            "description": "новая сумма баланса",
             "example": "1500"
           }
         }
@@ -838,7 +1001,7 @@
             },
             "sum": {
               "type": "integer",
-              "description": "sum",
+              "description": "Для корректировки баланса:Возвращается сумма корректировки",
               "example": "1500"
             }
           }
@@ -851,8 +1014,72 @@
               "date": "01.10.2021",
               "name": "Подарки",
               "category": "other-income",
-              "sum": 1500
+              "sum": "1500 Для корректировки баланса:Возвращается сумма корректировки"
             }
+          }
+        }
+      },
+      "GetCurrencyBalanceResponse": {
+        "type": "object",
+        "items": {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "object",
+              "properties": {
+                "balance": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "example": {
+          "status": "ok",
+          "code": 200,
+          "data": {
+            "balance": 166400
+          }
+        }
+      },
+      "GetCurrencyTotalMonth": {
+        "type": "object",
+        "items": {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "object",
+              "properties": {
+                "totalMonths": {
+                  "type": "object",
+                  "properties": {
+                    "month": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "example": {
+          "status": "ok",
+          "code": 200,
+          "data": {
+            "totalMonths": [
+              {
+                "month": "01-2020"
+              },
+              {
+                "month": "01-2021"
+              },
+              {
+                "month": "08-2021"
+              },
+              {
+                "month": "10-2021"
+              }
+            ]
           }
         }
       },
