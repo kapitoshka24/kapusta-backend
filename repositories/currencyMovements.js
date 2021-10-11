@@ -84,6 +84,32 @@ const getAll = async (userId, query, path) => {
   return lines;
 };
 
+const getTotalMonths = async userId => {
+  const SummaryYear = await CurrencyMovement.aggregate([
+    {
+      $match: {
+        owner: ObjectId(userId),
+      },
+    },
+    {
+      $group: {
+        _id: {
+          $dateToString: { format: '%m-%Y', date: '$date' },
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        month: '$_id',
+      },
+    },
+    { $sort: { month: 1 } },
+  ]);
+
+  return SummaryYear;
+};
+
 const getSummaryYear = async (year, pathСheck, userId) => {
   const SummaryYear = await CurrencyMovement.aggregate([
     {
@@ -184,6 +210,7 @@ const getDetailedInfoCategories = async (category, dateSplit, userId) => {
         sum: { $sum: '$sum' },
       },
     },
+    { $sort: { _id: 1 } },
   ]);
 
   return detailedInfoCategories;
@@ -216,6 +243,7 @@ const getSumCategories = async (dateSplit, pathСheck, userId) => {
         total: { $sum: '$sum' },
       },
     },
+    { $sort: { _id: 1 } },
   ]);
 
   return SumCategories;
@@ -226,6 +254,7 @@ module.exports = {
   update,
   delLine,
   getAll,
+  getTotalMonths,
   getSummaryYear,
   getBalance,
   getDetailedInfoCategories,
