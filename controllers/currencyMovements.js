@@ -191,15 +191,32 @@ const getSumCategoriesCtrl = async (req, res) => {
     user: { id: userId },
   } = req;
 
-  const pathСheck = req.path === '/sumCategoryExpenses';
-
   if (!date) {
     throw new BadRequest();
   }
 
   const dateSplit = date.split('/');
 
-  const response = await getSumCategories(dateSplit, pathСheck, userId);
+  const validate = true;
+  const response = await getSumCategories(dateSplit, validate, userId);
+
+  const summary = { expenses: [], income: [] };
+
+  let totalExpenses = 0;
+  let totalincome = 0;
+
+  // eslint-disable-next-line array-callback-return
+  response.map(value => {
+    const { _id, total } = value;
+
+    if (value.categoryValidate) {
+      summary.expenses.push({ _id, total });
+      totalExpenses += total;
+    } else {
+      summary.income.push({ _id, total });
+      totalincome += total;
+    }
+  });
 
   if (response.length === 0) {
     res.json({
@@ -213,7 +230,9 @@ const getSumCategoriesCtrl = async (req, res) => {
   res.json({
     status: statusCode.SUCCESS,
     code: httpCode.OK,
-    response,
+    summary,
+    totalExpenses,
+    totalincome,
   });
 };
 

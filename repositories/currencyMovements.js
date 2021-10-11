@@ -216,9 +216,14 @@ const getDetailedInfoCategories = async (category, dateSplit, userId) => {
   return detailedInfoCategories;
 };
 
-const getSumCategories = async (dateSplit, pathСheck, userId) => {
+const getSumCategories = async (dateSplit, validate, userId) => {
   const SumCategories = await CurrencyMovement.aggregate([
-    { $match: { owner: ObjectId(userId), category: { $not: /adjustments/ } } },
+    {
+      $match: {
+        owner: ObjectId(userId),
+        category: { $not: /adjustments/ },
+      },
+    },
     {
       $project: {
         month: { $month: '$date' },
@@ -226,13 +231,12 @@ const getSumCategories = async (dateSplit, pathСheck, userId) => {
         category: '$category',
         sum: '$sum',
         categoryValidate: {
-          $in: ['$category', pathСheck ? expends : incomes],
+          $in: ['$category', validate ? expends : incomes],
         },
       },
     },
     {
       $match: {
-        categoryValidate: true,
         month: +dateSplit[0],
         year: +dateSplit[1],
       },
@@ -240,6 +244,7 @@ const getSumCategories = async (dateSplit, pathСheck, userId) => {
     {
       $group: {
         _id: '$category',
+        categoryValidate: { $first: '$categoryValidate' },
         total: { $sum: '$sum' },
       },
     },
