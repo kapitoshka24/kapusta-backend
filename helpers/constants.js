@@ -13,7 +13,7 @@ const httpCode = {
 };
 
 const statusCode = {
-  SUCCESS: 'success',
+  SUCCESS: 'ok',
   ERROR: 'error',
 };
 
@@ -29,6 +29,7 @@ const message = {
   VERIFY_SUCCESS: 'Verification successful',
   VERIFY_RESEND: 'Verification email sent',
   MISSING_FIELDS: 'Missing fields',
+  INCORRECT_DATA: 'Incorrect data entry',
 };
 
 const limiterAPI = {

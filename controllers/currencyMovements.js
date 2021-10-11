@@ -1,6 +1,8 @@
-const { NotFound } = require('http-errors');
+const { NotFound, BadRequest } = require('http-errors');
+
+const { monthsArray } = require('../helpers');
 const { adjustments } = require('../helpers/categories');
-const { httpCode, message } = require('../helpers/constants');
+const { httpCode, statusCode, message } = require('../helpers/constants');
 
 const {
   addLine,
@@ -8,6 +10,10 @@ const {
   delLine,
   getAll,
   getBalance,
+  getTotalMonths,
+  getDetailedInfoCategories,
+  getSumCategories,
+  getSummaryYear,
 } = require('../repositories/currencyMovements');
 
 const createLine = async (req, res) => {
@@ -32,9 +38,9 @@ const createLine = async (req, res) => {
     res.line = createdLine;
   }
 
-  return res.status(201).json({
-    status: 'ok',
-    code: 201,
+  return res.status(httpCode.CREATED).json({
+    status: statusCode.SUCCESS,
+    code: httpCode.CREATED,
     data: {
       createdLine: res.line._doc,
     },
@@ -54,8 +60,8 @@ const updateLine = async (req, res, next) => {
   });
   if (createdLine && (reqName || reqSum)) {
     return res.json({
-      status: 'ok',
-      code: 200,
+      status: statusCode.SUCCESS,
+      code: httpCode.OK,
       data: {
         createdLine,
       },
@@ -73,40 +79,41 @@ const deleteLine = async (req, res) => {
     params,
   } = req;
   const { lineId } = params;
-  const message = await delLine(userId, lineId);
-  if (message) {
+  const resMessage = await delLine(userId, lineId);
+  if (resMessage) {
     return res.json({
-      status: 'ok',
-      code: 200,
+      status: statusCode.SUCCESS,
+      code: httpCode.OK,
       data: {
-        message,
+        resMessage,
       },
     });
   }
-  throw new NotFound('NOT_FOUND');
+  throw new NotFound(message.NOT_FOUND);
 };
 
-const getBalanceCtrl = async (req, res, next) => {
+const getBalanceCtrl = async (req, res) => {
   const {
     user: { id: userId },
   } = req;
   const balance = await getBalance(userId);
   if (balance || typeof balance === 'number') {
     return res.json({
-      status: 'ok',
-      code: 200,
+      status: statusCode.SUCCESS,
+      code: httpCode.OK,
       data: {
         balance,
       },
     });
   }
-  next({
-    status: httpCode.NOT_FOUND,
+  return res.json({
+    status: statusCode.SUCCESS,
+    code: httpCode.OK,
     message: message.NOT_FOUND,
   });
 };
 
-const getAllLines = async (req, res, next) => {
+const getAllLines = async (req, res) => {
   const {
     user: { id: userId },
     query,
@@ -116,14 +123,123 @@ const getAllLines = async (req, res, next) => {
   const { docs: lines } = await getAll(userId, query, pathName);
   if (lines.length > 0) {
     return res.json({
-      status: 'ok',
-      code: 200,
+      status: statusCode.SUCCESS,
+      code: httpCode.OK,
       data: pathName ? { [pathName]: lines } : { allLines: lines },
+    });
+  }
+
+  return res.json({
+    status: statusCode.SUCCESS,
+    code: httpCode.OK,
+    message: message.NOT_FOUND,
+  });
+};
+
+const getTotalMonthsCtrl = async (req, res, next) => {
+  const {
+    user: { id: userId },
+  } = req;
+  const totalMonths = await getTotalMonths(userId);
+  if (totalMonths.length > 0) {
+    return res.json({
+      status: statusCode.SUCCESS,
+      code: httpCode.OK,
+      data: { totalMonths },
     });
   }
   next({
     status: httpCode.NOT_FOUND,
     message: message.NOT_FOUND,
+  });
+};
+
+const getDetailedCategories = async (req, res) => {
+  const { category, date } = req.query;
+
+  const {
+    user: { id: userId },
+  } = req;
+
+  if (!date) {
+    throw new BadRequest();
+  }
+  const dateSplit = date.split('/');
+
+  const response = await getDetailedInfoCategories(category, dateSplit, userId);
+
+  if (response.length === 0) {
+    res.json({
+      status: statusCode.SUCCESS,
+      code: httpCode.OK,
+      message: message.NOT_FOUND,
+    });
+    return;
+  }
+
+  res.json({
+    status: statusCode.SUCCESS,
+    code: httpCode.OK,
+    response,
+  });
+};
+
+const getSumCategoriesCtrl = async (req, res) => {
+  const { date } = req.query;
+
+  const {
+    user: { id: userId },
+  } = req;
+
+  const pathСheck = req.path === '/sumCategoryExpenses';
+
+  if (!date) {
+    throw new BadRequest();
+  }
+
+  const dateSplit = date.split('/');
+
+  const response = await getSumCategories(dateSplit, pathСheck, userId);
+
+  if (response.length === 0) {
+    res.json({
+      status: statusCode.SUCCESS,
+      code: httpCode.OK,
+      message: message.NOT_FOUND,
+    });
+    return;
+  }
+
+  res.json({
+    status: statusCode.SUCCESS,
+    code: httpCode.OK,
+    response,
+  });
+};
+
+const getSummary = async (req, res) => {
+  const pathСheck = req.path === '/summaryExpenses';
+
+  const { year } = req.query;
+
+  const {
+    user: { id: userId },
+  } = req;
+
+  if (!year) {
+    throw new BadRequest(message.INCORRECT_DATA);
+  }
+
+  const response = await getSummaryYear(year, pathСheck, userId);
+
+  for (const i in response) {
+    response[i]._id = monthsArray[response[i]._id - 1];
+  }
+
+  res.json({
+    status: statusCode.SUCCESS,
+    code: httpCode.OK,
+    result: response,
   });
 };
 
@@ -133,4 +249,8 @@ module.exports = {
   deleteLine,
   getAllLines,
   getBalanceCtrl,
+  getTotalMonthsCtrl,
+  getDetailedCategories,
+  getSumCategoriesCtrl,
+  getSummary,
 };
