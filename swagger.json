@@ -542,10 +542,10 @@
         }
       }
     },
-    "/currencymovements/sumCategoryExpenses{?date=05/2021}": {
+    "/currencymovements/sumCategory{?date=05/2021}": {
       "get": {
         "tags": ["Currency-movement"],
-        "summary": "Get sum category expenses",
+        "summary": "get sum all category, get total sum category:income,expenses",
         "security": [{ "Bearer": [] }],
         "parameters": [
           {
@@ -564,7 +564,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SummaryExpensesIncomeResponse"
+                  "$ref": "#/components/schemas/CurrencyMovementAllResponse"
                 }
               }
             }
@@ -574,47 +574,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SummaryExpensesIncomeError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/currencymovements/sumCategoryIncome{?date=05/2021}": {
-      "get": {
-        "tags": ["Currency-movement"],
-        "summary": "Get sum category income",
-        "security": [{ "Bearer": [] }],
-        "parameters": [
-          {
-            "name": "date",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Current date for sum expenses"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SummaryExpensesIncomeResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SummaryExpensesIncomeError"
+                  "$ref": "#/components/schemas/CurrencyMovementAllError"
                 }
               }
             }
@@ -1142,7 +1102,7 @@
           }
         }
       },
-      "CurrencyMovementSummaryExpensesResponse": {
+      "CurrencyMovementAllResponse": {
         "type": "object",
         "items": {
           "result": {
@@ -1165,64 +1125,27 @@
           }
         },
         "example": {
-          "status": "success",
+          "status": "ok",
           "code": 200,
-          "data": {
-            "result": [
+          "summary": {
+            "expenses": [
               {
-                "_id": "Октябрь",
-                "total": 1850
-              },
+                "_id": "products",
+                "total": 2850.42
+              }
+            ],
+            "income": [
               {
-                "_id": "Май",
-                "total": 1950
+                "_id": "other-income",
+                "total": 200
               }
             ]
-          }
+          },
+          "totalExpenses": 2850.42,
+          "totalincome": 131200
         }
       },
-      "CurrencyMovementSummaryExpensesError": {
-        "type": "object",
-        "example": {
-          "status": "error",
-          "code": 400,
-          "message": "incorrect data entry"
-        }
-      },
-      "SummaryExpensesIncomeResponse": {
-        "type": "object",
-        "items": {
-          "response": {
-            "type": "object",
-            "items": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "description": "Current date",
-                  "example": "3249-2394-238"
-                },
-                "total": {
-                  "type": "integer",
-                  "description": "total sum",
-                  "example": "2000"
-                }
-              }
-            }
-          }
-        },
-        "example": {
-          "status": "success",
-          "code": 200,
-          "response": [
-            {
-              "_id": "products",
-              "total": 4700
-            }
-          ]
-        }
-      },
-      "SummaryExpensesIncomeError": {
+      "CurrencyMovementAllError": {
         "type": "object",
         "example": {
           "status": "error",
