@@ -12,7 +12,10 @@ const {
 } = require('../../../controllers/currencyMovements');
 
 const asyncWrapper = require('../../../helpers/asyncWrapper');
-const { validationCurrencyMovement } = require('./validation');
+const {
+  validationCurrencyMovement,
+  validationUpdateCurrencyMovement,
+} = require('./validation');
 const { guard } = require('../../../helpers');
 const router = express.Router();
 
@@ -23,7 +26,12 @@ router.post(
   asyncWrapper(createLine),
 );
 router.delete('/:lineId', guard, asyncWrapper(deleteLine));
-router.patch('/update/:lineId', guard, asyncWrapper(updateLine));
+router.patch(
+  '/update/:lineId',
+  guard,
+  validationUpdateCurrencyMovement,
+  asyncWrapper(updateLine),
+);
 router.get('/', guard, asyncWrapper(getAllLines));
 router.get('/incomes', guard, asyncWrapper(getAllLines));
 router.get('/expends', guard, asyncWrapper(getAllLines));

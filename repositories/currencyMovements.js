@@ -94,7 +94,7 @@ const getTotalMonths = async userId => {
     {
       $group: {
         _id: {
-          $dateToString: { format: '%m-%Y', date: '$date' },
+          $dateToString: { format: '%Y-%m', date: '$date' },
         },
       },
     },
