@@ -38,8 +38,6 @@ router.get('/summaryIncome', guard, asyncWrapper(getSummary));
 
 router.get('/detailedCategories', guard, asyncWrapper(getDetailedCategories));
 
-router.get('/sumCategoryExpenses', guard, asyncWrapper(getSumCategoriesCtrl));
-
-router.get('/sumCategoryIncome', guard, asyncWrapper(getSumCategoriesCtrl));
+router.get('/sumCategory', guard, asyncWrapper(getSumCategoriesCtrl));
 
 module.exports = router;
