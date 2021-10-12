@@ -1,4 +1,4 @@
-const { NotFound, BadRequest } = require('http-errors');
+const { NotFound } = require('http-errors');
 
 const { monthsArray } = require('../helpers');
 const { adjustments } = require('../helpers/categories');
@@ -161,10 +161,17 @@ const getDetailedCategories = async (req, res) => {
     user: { id: userId },
   } = req;
 
-  if (!date) {
-    throw new BadRequest();
-  }
   const dateSplit = date.split('/');
+
+  const validateDate = /^(0[1-9]|1[0-2])\/(200[0-9]|201[0-9]|202[0-1])$/;
+
+  if (!validateDate.test(date)) {
+    res.json({
+      status: statusCode.ERROR,
+      code: httpCode.BAD_REQUEST,
+      message: message.INCORRECT_DATA,
+    });
+  }
 
   const response = await getDetailedInfoCategories(category, dateSplit, userId);
 
@@ -191,11 +198,17 @@ const getSumCategoriesCtrl = async (req, res) => {
     user: { id: userId },
   } = req;
 
-  if (!date) {
-    throw new BadRequest();
-  }
-
   const dateSplit = date.split('/');
+
+  const validateDate = /^(0[1-9]|1[0-2])\/(200[0-9]|201[0-9]|202[0-1])$/;
+
+  if (!validateDate.test(date)) {
+    res.json({
+      status: statusCode.ERROR,
+      code: httpCode.BAD_REQUEST,
+      message: message.INCORRECT_DATA,
+    });
+  }
 
   const validate = true;
   const response = await getSumCategories(dateSplit, validate, userId);
@@ -245,8 +258,14 @@ const getSummary = async (req, res) => {
     user: { id: userId },
   } = req;
 
-  if (!year) {
-    throw new BadRequest(message.INCORRECT_DATA);
+  const validateDate = /^(200[0-9]|201[0-9]|202[0-1])$/;
+
+  if (!validateDate.test(year)) {
+    res.json({
+      status: statusCode.ERROR,
+      code: httpCode.BAD_REQUEST,
+      message: message.INCORRECT_DATA,
+    });
   }
 
   const response = await getSummaryYear(year, pathСheck, userId);
