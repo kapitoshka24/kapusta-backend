@@ -203,7 +203,7 @@ const getSumCategoriesCtrl = async (req, res) => {
   const summary = { expenses: [], income: [] };
 
   let totalExpenses = 0;
-  let totalincome = 0;
+  let totalIncome = 0;
 
   // eslint-disable-next-line array-callback-return
   response.map(value => {
@@ -214,7 +214,7 @@ const getSumCategoriesCtrl = async (req, res) => {
       totalExpenses += total;
     } else {
       summary.income.push({ _id, total });
-      totalincome += total;
+      totalIncome += total;
     }
   });
 
@@ -232,7 +232,7 @@ const getSumCategoriesCtrl = async (req, res) => {
     code: httpCode.OK,
     summary,
     totalExpenses,
-    totalincome,
+    totalIncome,
   });
 };
 
