@@ -141,11 +141,24 @@ const getTotalMonthsCtrl = async (req, res, next) => {
     user: { id: userId },
   } = req;
   const totalMonths = await getTotalMonths(userId);
+  const getAggregatedMonths = () => {
+    const years = {};
+    totalMonths.map(({ month }) => {
+      const splittingDate = month.split('-');
+      splittingDate[1] = monthsArray[+splittingDate[1] - 1];
+      if (!years[+splittingDate[0]]) {
+        years[splittingDate[0]] = [splittingDate[1]];
+      } else {
+        years[splittingDate[0]].push(splittingDate[1]);
+      }
+    });
+    return years;
+  };
   if (totalMonths.length > 0) {
     return res.json({
       status: statusCode.SUCCESS,
       code: httpCode.OK,
-      data: { totalMonths },
+      data: { totalMonths: getAggregatedMonths() },
     });
   }
   next({

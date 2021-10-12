@@ -2,8 +2,10 @@ const Joi = require('joi');
 const { categories } = require('../../../helpers/categories.js');
 const { httpCode } = require('../../../helpers/constants.js');
 
+const dateValidation = `1-1-${new Date().getFullYear()}`;
+
 const currencyMovementValidateSchema = Joi.object({
-  date: Joi.date().required(),
+  date: Joi.date().greater(dateValidation).required(),
   name: Joi.string().max(40).required(),
   category: Joi.string()
     .valid(...categories)
@@ -37,11 +39,11 @@ module.exports = {
       next,
     );
   },
-  validationUpdateSubscriptionUser: (req, _, next) => {
+  validationUpdateCurrencyMovement: (req, _, next) => {
     return validate(
       currencyMovementUpdateValidateSchema,
       req.body,
-      'Missing update fields',
+      'Value is not valid',
       next,
     );
   },
