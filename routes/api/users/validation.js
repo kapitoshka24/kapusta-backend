@@ -50,7 +50,6 @@ module.exports = {
       req.body,
       next,
       'sid must be string'
-
     )
   },
   validationRegistrationUser: (req, _, next) => {

@@ -17,7 +17,7 @@ router.post(
 );
 router.post("/logout", guard, controllerUser.authorize, controllerUser.logout);
 router.post('/login', validationLoginUser, controllerUser.login);
-router.post("/refresh", validateRefreshToken, controllerUser.refreshTokens);
+router.post("/refresh", validateRefreshToken, asyncWrapper(controllerUser.refreshTokens));
 router.get('/verify/:token', controllerUser.verify);
 router.post('/verify', controllerUser.repeatEmailVerification);
 router.get("/google", asyncWrapper(controllerUser.googleAuth));
