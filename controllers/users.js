@@ -224,6 +224,7 @@ const getCurrentUser = async (req, res, next) => {
           id: user.id,
           name: user.name,
           email: user.email,
+          createdAt: user.createdAt
         },
       });
 
