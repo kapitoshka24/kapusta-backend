@@ -462,7 +462,7 @@
         }
       }
     },
-    "/currencymovements/summaryExpenses{?year=2021}": {
+    "/currencymovements/summaryexpenses{?year=2021}": {
       "get": {
         "tags": ["Currency-movement"],
         "summary": "Get currency summary expenses",
@@ -502,7 +502,7 @@
         }
       }
     },
-    "/currencymovements/summaryIncome{?year=2021}": {
+    "/currencymovements/summaryincome{?year=2021}": {
       "get": {
         "tags": ["Currency-movement"],
         "summary": "Get currency summary income",
@@ -542,7 +542,7 @@
         }
       }
     },
-    "/currencymovements/sumCategory{?date=05/2021}": {
+    "/currencymovements/sumcategory{?date=05/2021}": {
       "get": {
         "tags": ["Currency-movement"],
         "summary": "get sum all category, get total sum category:income,expenses",
@@ -582,7 +582,7 @@
         }
       }
     },
-    "/currencymovements/detailedCategories{?date=05/2021&category=products}": {
+    "/currencymovements/detailedcategories{?date=05/2021&category=products}": {
       "get": {
         "tags": ["Currency-movement"],
         "summary": "Get detailed categories",
