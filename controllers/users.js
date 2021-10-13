@@ -107,7 +107,8 @@ const login = async (req, res, next) => {
             },
             email: data.email,
             name: data.name,
-            id: data._id
+            id: data._id,
+            createdAt: data.createdAt
           },
         });
       });
@@ -180,21 +181,25 @@ const refreshTokens = async (req, res) => {
     const newSession = await SessionModel.create({
       uid: user._id,
     });
-    const newAccessToken = jwt.sign(
+    const accessToken = jwt.sign(
       { uid: user._id, sid: newSession._id },
       process.env.JWT_SECRET,
       {
         expiresIn: process.env.JWT_ACCESS_EXPIRE_TIME,
       }
     );
-    const newRefreshToken = jwt.sign(
+    const refreshToken = jwt.sign(
       { uid: user._id, sid: newSession._id },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_REFRESH_EXPIRE_TIME }
     );
     return res
       .status(httpCode.OK)
-      .send({ headers: { newAccessToken, newRefreshToken, newSid: newSession._id } });
+      .json({
+        status: 'success',
+        code: httpCode.OK,
+        headers: { accessToken, refreshToken, sid: newSession._id }
+      });
   }
   return res.status(httpCode.BAD_REQUEST).send({ message: "No token provided" });
 };
@@ -224,6 +229,7 @@ const getCurrentUser = async (req, res, next) => {
           id: user.id,
           name: user.name,
           email: user.email,
+          createdAt: user.createdAt
         },
       });
 

@@ -462,7 +462,7 @@
         }
       }
     },
-    "/currencymovements/summaryExpenses{?year=2021}": {
+    "/currencymovements/summaryexpenses{?year=2021}": {
       "get": {
         "tags": ["Currency-movement"],
         "summary": "Get currency summary expenses",
@@ -475,7 +475,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Current year for expenses"
+            "description": "Current year for expenses, валидация только на год"
           }
         ],
         "responses": {
@@ -502,7 +502,7 @@
         }
       }
     },
-    "/currencymovements/summaryIncome{?year=2021}": {
+    "/currencymovements/summaryincome{?date=05/2021}": {
       "get": {
         "tags": ["Currency-movement"],
         "summary": "Get currency summary income",
@@ -515,7 +515,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Current year for income"
+            "description": "Current year for income с месяцем и годом"
           }
         ],
         "responses": {
@@ -542,7 +542,7 @@
         }
       }
     },
-    "/currencymovements/sumCategory{?date=05/2021}": {
+    "/currencymovements/sumcategory{?date=05/2021}": {
       "get": {
         "tags": ["Currency-movement"],
         "summary": "get sum all category, get total sum category:income,expenses",
@@ -555,7 +555,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Current date for sum expenses"
+            "description": "Current date for sum expenses с месяцем и годом"
           }
         ],
         "responses": {
@@ -582,7 +582,7 @@
         }
       }
     },
-    "/currencymovements/detailedCategories{?date=05/2021&category=products}": {
+    "/currencymovements/detailedcategories{?date=05/2021&category=products}": {
       "get": {
         "tags": ["Currency-movement"],
         "summary": "Get detailed categories",
@@ -595,7 +595,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Current date "
+            "description": "Current date с месяцем и годом"
           },
           {
             "name": "category",
@@ -744,6 +744,10 @@
             "id": {
               "type": "string",
               "description": "User's id"
+            },
+            "createdAt": {
+              "type": "string",
+              "description": " date for element created"
             }
           }
         },
@@ -758,7 +762,8 @@
             },
             "email": "guest@example.com",
             "name": "Guest",
-            "id": "6162e971"
+            "id": "6162e971",
+            "createdAt": "2021-10-12T13:26:44.794Z"
           }
         }
       },
@@ -828,13 +833,22 @@
               "type": "string",
               "description": "User's email",
               "format": "email"
+            },
+            "createdAt": {
+              "type": "string",
+              "description": " date for element created"
             }
           }
         },
         "example": {
           "status": "success",
           "code": 201,
-          "data": { "id": "1", "name": "Guest", "email": "guest@example.com" }
+          "data": {
+            "id": "1",
+            "name": "Guest",
+            "email": "guest@example.com",
+            "createdAt": "2021-10-12T13:26:44.794Z"
+          }
         }
       },
       "CurrencyMovementsAllResponse": {
