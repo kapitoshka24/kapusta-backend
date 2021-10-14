@@ -2,6 +2,6 @@ const express = require('express');
 const router = express.Router();
 
 router.use('/users', require('./users'));
-router.use('/currencymovements', require('./currencyMovements'));
+router.use('/currency-movements', require('./currencyMovements'));
 
 module.exports = router;

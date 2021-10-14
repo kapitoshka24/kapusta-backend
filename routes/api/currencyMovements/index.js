@@ -16,36 +16,41 @@ const {
   validationCurrencyMovement,
   validationUpdateCurrencyMovement,
 } = require('./validation');
-const { guard } = require('../../../helpers');
+const { authorize } = require('../../../controllers/users');
 const router = express.Router();
 
 router.post(
   '/create',
-  guard,
+  authorize,
   validationCurrencyMovement,
   asyncWrapper(createLine),
 );
-router.delete('/:lineId', guard, asyncWrapper(deleteLine));
+router.delete('/:lineId', authorize, asyncWrapper(deleteLine));
 router.patch(
   '/update/:lineId',
-  guard,
+  authorize,
   validationUpdateCurrencyMovement,
   asyncWrapper(updateLine),
 );
-router.get('/', guard, asyncWrapper(getAllLines));
-router.get('/incomes', guard, asyncWrapper(getAllLines));
-router.get('/expends', guard, asyncWrapper(getAllLines));
-router.get('/adjustments', guard, asyncWrapper(getAllLines));
-router.post('/adjustments', guard, asyncWrapper(createLine));
-router.get('/balance', guard, asyncWrapper(getBalanceCtrl));
-router.get('/totalMonths', guard, asyncWrapper(getTotalMonthsCtrl));
 
-router.get('/summaryexpenses', guard, asyncWrapper(getSummary));
+router.get('/', authorize, asyncWrapper(getAllLines));
+router.get('/incomes', authorize, asyncWrapper(getAllLines));
+router.get('/expends', authorize, asyncWrapper(getAllLines));
+router.get('/adjustments', authorize, asyncWrapper(getAllLines));
+router.post('/adjustments', authorize, asyncWrapper(createLine));
+router.get('/balance', authorize, asyncWrapper(getBalanceCtrl));
+router.get('/total-months', authorize, asyncWrapper(getTotalMonthsCtrl));
 
-router.get('/summaryincome', guard, asyncWrapper(getSummary));
+router.get('/summary-expenses', authorize, asyncWrapper(getSummary));
 
-router.get('/detailedcategories', guard, asyncWrapper(getDetailedCategories));
+router.get('/summary-income', authorize, asyncWrapper(getSummary));
 
-router.get('/sumcategory', guard, asyncWrapper(getSumCategoriesCtrl));
+router.get(
+  '/detailed-categories',
+  authorize,
+  asyncWrapper(getDetailedCategories),
+);
+
+router.get('/sum-category', authorize, asyncWrapper(getSumCategoriesCtrl));
 
 module.exports = router;

@@ -264,7 +264,7 @@
         }
       }
     },
-    "/currencymovements": {
+    "/currency-movements": {
       "get": {
         "tags": ["Currency-movement"],
         "summary": "Get all currency movements",
@@ -293,7 +293,7 @@
         }
       }
     },
-    "/currencymovements/create": {
+    "/currency-movements/create": {
       "post": {
         "tags": ["Currency-movement"],
         "summary": "Create currency movement",
@@ -328,7 +328,7 @@
         }
       }
     },
-    "/currencymovements/{:id}": {
+    "/currency-movements/{:id}": {
       "delete": {
         "tags": ["Currency-movement"],
         "summary": "Delete currency movement",
@@ -356,7 +356,7 @@
         }
       }
     },
-    "/currencymovements/balance": {
+    "/currency-movements/balance": {
       "get": {
         "tags": ["Currency-movement"],
         "summary": "Get currency balance",
@@ -380,7 +380,7 @@
         }
       }
     },
-    "/currencymovements/incomes": {
+    "/currency-movements/incomes": {
       "get": {
         "tags": ["Currency-movement"],
         "summary": "Get currency incomes",
@@ -409,7 +409,7 @@
         }
       }
     },
-    "/currencymovements/adjustments": {
+    "/currency-movements/adjustments": {
       "get": {
         "tags": ["Currency-movement"],
         "summary": "Get currency adjustments",
@@ -438,7 +438,7 @@
         }
       }
     },
-    "/currencymovements/totalMonths": {
+    "/currency-movements/total-months": {
       "get": {
         "tags": ["Currency-movement"],
         "summary": "Get currency total months",
@@ -462,7 +462,7 @@
         }
       }
     },
-    "/currencymovements/summaryexpenses{?year=2021}": {
+    "/currency-movements/summary-expenses{?year=2021}": {
       "get": {
         "tags": ["Currency-movement"],
         "summary": "Get currency summary expenses",
@@ -502,7 +502,7 @@
         }
       }
     },
-    "/currencymovements/summaryincome{?date=05/2021}": {
+    "/currency-movements/summary-income{?date=05/2021}": {
       "get": {
         "tags": ["Currency-movement"],
         "summary": "Get currency summary income",
@@ -542,7 +542,7 @@
         }
       }
     },
-    "/currencymovements/sumcategory{?date=05/2021}": {
+    "/currency-movements/sum-category{?date=05/2021}": {
       "get": {
         "tags": ["Currency-movement"],
         "summary": "get sum all category, get total sum category:income,expenses",
@@ -582,7 +582,7 @@
         }
       }
     },
-    "/currencymovements/detailedcategories{?date=05/2021&category=products}": {
+    "/currencymovements/detailed-categories{?date=05/2021&category=products}": {
       "get": {
         "tags": ["Currency-movement"],
         "summary": "Get detailed categories",
@@ -932,9 +932,9 @@
         "required": ["date", "name", "category", "sum"],
         "properties": {
           "date": {
-            "type": "string",
+            "type": "date",
             "description": "current date",
-            "example": "01.01.2021"
+            "example": "2021-01-01"
           },
           "name": {
             "type": "string",
@@ -948,7 +948,7 @@
           },
           "sum": {
             "type": "integer",
-            "description": "новая сумма баланса",
+            "description": "сумма дохода/расхода или новая сумма баланса",
             "example": "1500"
           }
         }
@@ -959,9 +959,9 @@
           "type": "object",
           "properties": {
             "date": {
-              "type": "string",
+              "type": "date",
               "description": "Current date",
-              "example": "01.10.2021"
+              "example": "2021-01-02"
             },
             "name": {
               "type": "string",
@@ -985,7 +985,7 @@
           "code": 201,
           "data": {
             "createdLine": {
-              "date": "01.10.2021",
+              "date": "2021-01-02",
               "name": "Подарки",
               "category": "other-income",
               "sum": "1500 Для корректировки баланса:Возвращается сумма корректировки"
