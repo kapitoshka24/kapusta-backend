@@ -1,4 +1,4 @@
-const incomes = ['salary', 'other-income'];
+const incomes = ['salary', 'otherIncome'];
 const expends = [
   'products',
   'alcohol',
@@ -7,8 +7,8 @@ const expends = [
   'transport',
   'housing',
   'technique',
-  'utility-communication',
-  'sports-hobbies',
+  'utilityCommunication',
+  'sportsHobbies',
   'education',
   'other',
 ];
