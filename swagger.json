@@ -623,7 +623,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SummaryExpensesIncomeError"
+                  "$ref": "#/components/schemas/CurrencyMovementAllError"
                 }
               }
             }
@@ -1198,6 +1198,79 @@
               "sum": 4700
             }
           ]
+        }
+      },
+      "CurrencyMovementSummaryExpensesResponse": {
+        "type": "object",
+        "items": {
+          "expends": {
+            "type": "object",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Current date",
+                  "example": "3249-2394-238"
+                },
+                "date": {
+                  "type": "string",
+                  "description": "date",
+                  "example": "04.10.2020"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "name",
+                  "example": "adjustment"
+                },
+                "category": {
+                  "type": "string",
+                  "description": "category",
+                  "example": "adjustment"
+                },
+                "sum": {
+                  "type": "integer",
+                  "description": "sum",
+                  "example": 150
+                },
+                "createdAt": {
+                  "type": "string",
+                  "description": "created at",
+                  "example": "2021-10-05T18:12:59.904Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "description": "updated at",
+                  "example": "2021-10-05T18:12:59.904Z"
+                }
+              }
+            }
+          }
+        },
+        "example": {
+          "status": "ok",
+          "code": 200,
+          "data": {
+            "expends": [
+              {
+                "_id": "615c95abe15423fb9de8b4cd",
+                "date": "04.10.2021",
+                "name": "adjustment",
+                "category": "adjustments",
+                "sum": 150,
+                "createdAt": "2021-10-05T18:12:59.904Z",
+                "updatedAt": "2021-10-05T18:12:59.904Z"
+              }
+            ]
+          }
+        }
+      },
+      "CurrencyMovementSummaryExpensesError": {
+        "type": "object",
+        "example": {
+          "status": "error",
+          "code": 400,
+          "message": "Bad Request"
         }
       }
     },
