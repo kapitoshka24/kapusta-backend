@@ -335,7 +335,7 @@ const googleRedirect = async (req, res) => {
   });
 
   const existingParent = await UserSchema.findOne({ email: userData.data.email });
-  console.log(existingParent)
+
   if (!existingParent) {
     return res.status(403).send({
       message:
@@ -360,7 +360,7 @@ const googleRedirect = async (req, res) => {
     }
   );
   return res.redirect(
-    `${process.env.LINK_THIS_APP_FRONT}?accessToken=${accessToken}&refreshToken=${refreshToken}&sid=${newSession._id}`
+    `${process.env.LINK_THIS_APP_FRONT}login?accessToken=${accessToken}&refreshToken=${refreshToken}&sid=${newSession._id}`
   );
 };
 
