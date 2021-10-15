@@ -263,7 +263,7 @@ const getSumCategoriesCtrl = async (req, res) => {
 };
 
 const getSummary = async (req, res) => {
-  const pathСheck = req.path === '/summaryExpenses';
+  const pathСheck = req.path === '/summary-expenses';
 
   const { year } = req.query;
 

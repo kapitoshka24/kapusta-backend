@@ -4,11 +4,11 @@ const { httpCode } = require('../../../helpers/constants');
 const schemaRegistrationUser = Joi.object({
   name: Joi.string()
     .min(3)
-    .max(30)
-    .pattern(/^\w+(?:\s+\w+)*$/)
+    .max(40)
+    .pattern(/^[A-z]+(?:\s+[A-z]+)*$|^[А-я]+(?:\s+[А-я]+)*$/)
     .default('Guest')
     .optional(),
-  password: Joi.string().min(3).max(15).required(),
+  password: Joi.string().min(6).max(30).required(),
   email: Joi.string()
     .email({
       minDomainSegments: 2,
@@ -18,7 +18,7 @@ const schemaRegistrationUser = Joi.object({
 });
 
 const schemaLoginUser = Joi.object({
-  password: Joi.string().min(3).max(15).required(),
+  password: Joi.string().min(6).max(30).required(),
   email: Joi.string()
     .email({
       minDomainSegments: 2,
@@ -28,7 +28,7 @@ const schemaLoginUser = Joi.object({
 });
 
 const refreshTokensSchema = Joi.object({
-  sid: Joi.string().required()
+  sid: Joi.string().required(),
 });
 
 const validate = async (schema, obj, next, errorMsg) => {
@@ -45,12 +45,7 @@ const validate = async (schema, obj, next, errorMsg) => {
 
 module.exports = {
   validateRefreshToken: (req, _, next) => {
-    return validate(
-      refreshTokensSchema,
-      req.body,
-      next,
-      'sid must be string'
-    )
+    return validate(refreshTokensSchema, req.body, next, 'sid must be string');
   },
   validationRegistrationUser: (req, _, next) => {
     return validate(
@@ -68,5 +63,4 @@ module.exports = {
       'Invalid credentials or missing required fields',
     );
   },
-
 };
