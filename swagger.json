@@ -409,6 +409,35 @@
         }
       }
     },
+    "/currency-movements/expends": {
+      "get": {
+        "tags": ["Currency-movement"],
+        "summary": "Get all currency movements",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "operation",
+            "description": "limit по умолчанию 20, page по умолчанию 1,category название категории из доходов или расходов. Категория доходов в расходах и наоборот не находится.sortBy или sortByDesc -- указать название поля для сортировки (_id, date, name, category, sum, createdAt ,  updatedAt). По умолчанию сортировка по убыванию по полю date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrencyMovementsAllResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Empty array",
+            "content": {}
+          }
+        }
+      }
+    },
     "/currency-movements/adjustments": {
       "get": {
         "tags": ["Currency-movement"],
