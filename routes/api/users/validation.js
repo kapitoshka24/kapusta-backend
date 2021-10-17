@@ -30,7 +30,7 @@ const schemaRegisterWithGoogle = Joi.object({
   name: Joi.string().required(),
   googleId: Joi.string().min(6).max(30).required(),
   email: Joi.string().required(),
-  picture: Joi.string().optional()
+  picture: Joi.string().optional(),
 });
 
 const refreshTokensSchema = Joi.object({
@@ -74,7 +74,7 @@ module.exports = {
       schemaRegisterWithGoogle,
       req.body,
       next,
-      'Something wrong whi server '
-    )
-  }
+      'Something wrong with server',
+    );
+  },
 };
