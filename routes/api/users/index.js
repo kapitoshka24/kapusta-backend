@@ -5,7 +5,8 @@ const router = express.Router();
 const {
   validationRegistrationUser,
   validationLoginUser,
-  validateRefreshToken
+  validateRefreshToken,
+  validateGoogleRegister
 } = require('./validation');
 
 
@@ -21,6 +22,7 @@ router.post("/refresh", validateRefreshToken, asyncWrapper(controllerUser.refres
 router.get('/verify/:token', controllerUser.verify);
 router.post('/verify', controllerUser.repeatEmailVerification);
 router.get("/google", asyncWrapper(controllerUser.googleAuth));
+router.post("/google/v1", validateGoogleRegister, asyncWrapper(controllerUser.googleRegister));
 router.get("/google-redirect", asyncWrapper(controllerUser.googleRedirect));
 router.get('/current', guard, controllerUser.getCurrentUser);
 

@@ -13,7 +13,7 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      required: [true, 'Password is required'],
+      default: null
     },
     email: {
       type: String,
@@ -24,13 +24,20 @@ const userSchema = new Schema(
         return re.test(String(value).toLowerCase());
       },
     },
+    googleId: {
+      type: String,
+      default: null
+    },
+    picture: {
+      type: String,
+      default: null
+    },
     isVerified: {
       type: Boolean,
       default: false,
     },
     verifyToken: {
       type: String,
-      required: [true, 'Verify token is required'],
       default: id(),
     },
   },
