@@ -241,6 +241,7 @@ const getCurrentUser = async (req, res, next) => {
         code: httpCode.OK,
         data: {
           id: user.id,
+          picture: user.picture,
           name: user.name,
           email: user.email,
           createdAt: user.createdAt,
@@ -393,10 +394,9 @@ const googleRegister = async (req, res, next) => {
       googleId,
       picture,
       isVerified: true,
-      verifyToken: null
-    })
+      verifyToken: null,
+    });
     try {
-
       const newSession = await SessionModel.create({
         uid: newUser._id,
       });
@@ -415,34 +415,36 @@ const googleRegister = async (req, res, next) => {
           expiresIn: process.env.JWT_REFRESH_EXPIRE_TIME,
         },
       );
-      return await UserSchema.findOne({ email: newUser.email }).exec((err, data) => {
-        if (err) {
-          next(err);
-        }
-        return res.status(httpCode.OK).send({
-          status: 'success',
-          code: httpCode.OK,
-          data: {
-            headers: {
-              accessToken,
-              refreshToken,
-              sid: newSession._id,
+      return await UserSchema.findOne({ email: newUser.email }).exec(
+        (err, data) => {
+          if (err) {
+            next(err);
+          }
+          return res.status(httpCode.OK).send({
+            status: 'success',
+            code: httpCode.OK,
+            data: {
+              headers: {
+                accessToken,
+                refreshToken,
+                sid: newSession._id,
+              },
+              email: data.email,
+              name: data.name,
+              id: data._id,
+              picture: data.picture,
+              createdAt: data.createdAt,
             },
-            email: data.email,
-            name: data.name,
-            id: data._id,
-            picture: data.picture,
-            createdAt: data.createdAt,
-          },
-        });
-      });
+          });
+        },
+      );
     } catch (e) {
       next(e);
     }
   } catch (error) {
     next(error);
   }
-}
+};
 
 module.exports = {
   signup,
@@ -455,5 +457,5 @@ module.exports = {
   repeatEmailVerification,
   googleAuth,
   googleRedirect,
-  googleRegister
+  googleRegister,
 };
