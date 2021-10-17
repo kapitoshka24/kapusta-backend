@@ -38,7 +38,7 @@ const userSchema = new Schema(
     },
     verifyToken: {
       type: String,
-      default: null,
+      default: id(),
     },
   },
   {
