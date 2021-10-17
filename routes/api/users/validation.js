@@ -26,6 +26,12 @@ const schemaLoginUser = Joi.object({
     })
     .required(),
 });
+const schemaRegisterWithGoogle = Joi.object({
+  name: Joi.string().required(),
+  googleId: Joi.string().min(6).max(30).required(),
+  email: Joi.string().required(),
+  picture: Joi.string().optional()
+});
 
 const refreshTokensSchema = Joi.object({
   sid: Joi.string().required(),
@@ -63,4 +69,12 @@ module.exports = {
       'Invalid credentials or missing required fields',
     );
   },
+  validateGoogleRegister: (req, _, next) => {
+    return validate(
+      schemaRegisterWithGoogle,
+      req.body,
+      next,
+      'Something wrong whi server '
+    )
+  }
 };

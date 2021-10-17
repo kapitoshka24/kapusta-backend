@@ -376,6 +376,75 @@ const googleRedirect = async (req, res) => {
     `${process.env.LINK_THIS_APP_FRONT}login?accessToken=${accessToken}&refreshToken=${refreshToken}&sid=${newSession._id}`,
   );
 };
+const googleRegister = async (req, res, next) => {
+  try {
+    const { name, email, googleId, picture } = req.body;
+    const user = await serviceUser.findByEmail(email);
+    if (user) {
+      return res.status(httpCode.CONFLICT).json({
+        status: 'error',
+        code: httpCode.CONFLICT,
+        message: 'This email is already use',
+      });
+    }
+    const newUser = await serviceUser.create({
+      name,
+      email,
+      googleId,
+      picture,
+      isVerified: true,
+      verifyToken: null
+    })
+    try {
+
+      const newSession = await SessionModel.create({
+        uid: newUser._id,
+      });
+
+      const accessToken = jwt.sign(
+        { uid: newUser._id, sid: newSession._id },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: process.env.JWT_ACCESS_EXPIRE_TIME,
+        },
+      );
+      const refreshToken = jwt.sign(
+        { uid: newUser._id, sid: newSession._id },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: process.env.JWT_REFRESH_EXPIRE_TIME,
+        },
+      );
+      return await UserSchema.findOne({ email: newUser.email }).exec((err, data) => {
+        if (err) {
+          next(err);
+        }
+        return res.status(httpCode.OK).send({
+          status: 'success',
+          code: httpCode.OK,
+          data: {
+            headers: {
+              accessToken,
+              refreshToken,
+              sid: newSession._id,
+            },
+            email: data.email,
+            name: data.name,
+            id: data._id,
+            picture: data.picture,
+            createdAt: data.createdAt,
+          },
+        });
+      });
+    } catch (e) {
+      next(e);
+    }
+
+
+  } catch (error) {
+    next(error);
+  }
+}
 
 module.exports = {
   signup,
@@ -388,4 +457,5 @@ module.exports = {
   repeatEmailVerification,
   googleAuth,
   googleRedirect,
+  googleRegister
 };
