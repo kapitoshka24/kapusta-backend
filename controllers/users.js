@@ -1,3 +1,4 @@
+const id = require('shortid');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
 const queryString = require('query-string');
@@ -7,10 +8,10 @@ const {
   EmailService,
   CreateSenderNodemailer,
 } = require('../services');
-
 const { SessionModel, UserSchema } = require('../model');
 const { UsersRepository } = require('../repositories');
 const { httpCode } = require('../helpers');
+const bcrypt = require('bcryptjs');
 
 require('dotenv').config();
 
@@ -377,6 +378,72 @@ const googleRedirect = async (req, res) => {
   );
 };
 
+const forgotten = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const user = await serviceUser.findByEmail(email);
+
+    if (!user) {
+      return res.status(httpCode.NOT_FOUND).json({
+        status: 'error',
+        code: httpCode.CONFLICT,
+        message: 'Email not found',
+      });
+    }
+
+    const newToken = id();
+
+    await serviceUser.forgotten(user.id, newToken);
+
+    try {
+      const emailService = new EmailService(
+        process.env.NODE_ENV,
+        new CreateSenderNodemailer(),
+      );
+      await emailService.sendForgottenEmail(email, user.name, newToken);
+    } catch (error) {
+      console.log(error.message);
+    }
+    return res.status(httpCode.OK).json({
+      status: 'success',
+      code: httpCode.CREATED,
+      data: { email },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const resetPassword = async (req, res, next) => {
+  try {
+    const { password, verifyToken } = req.body;
+
+    const user = await serviceUser.findByVerifyToken(verifyToken);
+
+    if (!user) {
+      return res.status(httpCode.NOT_FOUND).json({
+        status: 'error',
+        code: httpCode.CONFLICT,
+        message: 'User not found',
+      });
+    }
+
+    // const cryptPassword = await bcrypt.hash(
+    //   password,
+    //   bcrypt.genSaltSync(SALT_FACTOR),
+    // );
+    const resp = await serviceUser.resetPassword(user.id, password);
+
+    return res.status(httpCode.OK).json({
+      status: 'success',
+      code: httpCode.CREATED,
+      data: { resp },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   signup,
   login,
@@ -388,4 +455,6 @@ module.exports = {
   repeatEmailVerification,
   googleAuth,
   googleRedirect,
+  forgotten,
+  resetPassword,
 };

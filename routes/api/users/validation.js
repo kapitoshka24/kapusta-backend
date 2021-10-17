@@ -27,6 +27,19 @@ const schemaLoginUser = Joi.object({
     .required(),
 });
 
+const schemaForgotten = Joi.object({
+  email: Joi.string()
+    .email({
+      minDomainSegments: 2,
+      tlds: { allow: ['com', 'net', 'ua'] },
+    })
+    .required(),
+});
+const schemaResetPassword = Joi.object({
+  password: Joi.string().min(6).max(30).required(),
+  verifyToken: Joi.string().required(),
+});
+
 const refreshTokensSchema = Joi.object({
   sid: Joi.string().required(),
 });
@@ -58,6 +71,24 @@ module.exports = {
   validationLoginUser: (req, _, next) => {
     return validate(
       schemaLoginUser,
+      req.body,
+      next,
+      'Invalid credentials or missing required fields',
+    );
+  },
+
+  validationForgotten: (req, _, next) => {
+    return validate(
+      schemaForgotten,
+      req.body,
+      next,
+      'Invalid credentials or missing required fields',
+    );
+  },
+
+  validationResetPassword: (req, _, next) => {
+    return validate(
+      schemaResetPassword,
       req.body,
       next,
       'Invalid credentials or missing required fields',
