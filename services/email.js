@@ -64,7 +64,7 @@ class EmailService {
           button: {
             color: '#22BC66',
             text: 'Change',
-            link: `${process.env.LINK_THIS_APP_FRONT}resetPassword/${token}`,
+            link: `${process.env.LINK_THIS_APP_FRONT}/resetPassword/${token}`,
           },
         },
         outro:
@@ -88,7 +88,7 @@ class EmailService {
     const emailHtml = this.#createTemplateForgottenEmail(name, token);
     const msg = {
       to: email,
-      subject: 'Verify your contact',
+      subject: 'Reset password',
       html: emailHtml,
     };
     await this.sender.send(msg);
