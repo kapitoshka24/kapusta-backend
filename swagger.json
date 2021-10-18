@@ -264,6 +264,74 @@
         }
       }
     },
+    "/users/forgotten": {
+      "post": {
+        "tags": ["User"],
+        "summary": "forgotten password",
+        "parameters": [],
+        "requestBody": {
+          "description": "forgotten password",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/forgottenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forgottenResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid credentials or missing required fields",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/resetPassword": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Reset password",
+        "parameters": [],
+        "requestBody": {
+          "description": "Reset password",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/resetPassRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/resetPassResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid credentials or missing required fields",
+            "content": {}
+          }
+        }
+      }
+    },
     "/currency-movements": {
       "get": {
         "tags": ["Currency-movement"],
@@ -842,6 +910,74 @@
             "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
             "sid": "6162ee2cc5"
           }
+        }
+      },
+      "forgottenRequest": {
+        "type": "object",
+        "items": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "email",
+              "format": "email"
+            }
+          }
+        },
+        "example": {
+          "email": "email@example.com"
+        }
+      },
+      "forgottenResponse": {
+        "type": "object",
+        "items": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "email",
+              "format": "email"
+            }
+          }
+        },
+        "example": {
+          "status": "success",
+          "code": 201,
+          "data": {
+            "email": "email@example.com"
+          }
+        }
+      },
+      "resetPassRequest": {
+        "type": "object",
+        "items": {
+          "type": "object",
+          "properties": {
+            "password": {
+              "type": "string",
+              "description": "password"
+            },
+            "verifyToken": {
+              "type": "string",
+              "description": "verify token"
+            }
+          }
+        },
+        "example": {
+          "password": "string",
+          "verifyToken": "string"
+        }
+      },
+      "resetPassResponse": {
+        "type": "object",
+        "items": {
+          "type": "object",
+          "properties": {}
+        },
+        "example": {
+          "status": "success",
+          "code": 201,
+          "message": "Password reset success"
         }
       },
       "CurrentUserResponse": {
