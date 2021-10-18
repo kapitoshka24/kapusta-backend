@@ -11,7 +11,6 @@ const {
 const { SessionModel, UserSchema } = require('../model');
 const { UsersRepository } = require('../repositories');
 const { httpCode } = require('../helpers');
-// const bcrypt = require('bcryptjs');
 
 require('dotenv').config();
 
@@ -496,12 +495,12 @@ const resetPassword = async (req, res, next) => {
       });
     }
 
-    const resp = await serviceUser.resetPassword(user.id, password);
+    await serviceUser.resetPassword(user.id, password);
 
     return res.status(httpCode.OK).json({
       status: 'success',
       code: httpCode.CREATED,
-      data: { resp },
+      message: 'Password reset success',
     });
   } catch (error) {
     next(error);
