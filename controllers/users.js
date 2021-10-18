@@ -241,6 +241,7 @@ const getCurrentUser = async (req, res, next) => {
         code: httpCode.OK,
         data: {
           id: user.id,
+          picture: user.picture,
           name: user.name,
           email: user.email,
           createdAt: user.createdAt,
