@@ -64,7 +64,7 @@ class EmailService {
           button: {
             color: '#22BC66',
             text: 'Change',
-            link: `${process.env.LINK_THIS_APP_FRONT}/resetPassword/${token}`,
+            link: `${process.env.LINK_THIS_APP_FRONT}resetPassword/${token}`,
           },
         },
         outro:

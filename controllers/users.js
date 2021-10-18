@@ -11,7 +11,7 @@ const {
 const { SessionModel, UserSchema } = require('../model');
 const { UsersRepository } = require('../repositories');
 const { httpCode } = require('../helpers');
-const bcrypt = require('bcryptjs');
+// const bcrypt = require('bcryptjs');
 
 require('dotenv').config();
 
