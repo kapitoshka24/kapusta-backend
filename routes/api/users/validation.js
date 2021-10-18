@@ -33,6 +33,19 @@ const schemaRegisterWithGoogle = Joi.object({
   picture: Joi.string().optional(),
 });
 
+const schemaForgotten = Joi.object({
+  email: Joi.string()
+    .email({
+      minDomainSegments: 2,
+      tlds: { allow: ['com', 'net', 'ua'] },
+    })
+    .required(),
+});
+const schemaResetPassword = Joi.object({
+  password: Joi.string().min(6).max(30).required(),
+  verifyToken: Joi.string().required(),
+});
+
 const refreshTokensSchema = Joi.object({
   sid: Joi.string().required(),
 });
@@ -69,6 +82,25 @@ module.exports = {
       'Invalid credentials or missing required fields',
     );
   },
+
+  validationForgotten: (req, _, next) => {
+    return validate(
+      schemaForgotten,
+      req.body,
+      next,
+      'Invalid credentials or missing required fields',
+    );
+  },
+
+  validationResetPassword: (req, _, next) => {
+    return validate(
+      schemaResetPassword,
+      req.body,
+      next,
+      'Invalid credentials or missing required fields',
+    );
+  },
+
   validateGoogleRegister: (req, _, next) => {
     return validate(
       schemaRegisterWithGoogle,
