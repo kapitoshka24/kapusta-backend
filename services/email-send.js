@@ -4,7 +4,7 @@ require('dotenv').config();
 class CreateSenderNodemailer {
   async send(msg) {
     const config = {
-      host: 'smtp.meta.ua',
+      host: process.env.HOST_EMAIL ?? 'smtp.meta.ua',
       port: 465,
       secure: true,
       auth: {

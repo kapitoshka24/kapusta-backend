@@ -56,6 +56,16 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+userSchema.pre('updateOne', async function (next) {
+  if (this._update.password) {
+    this._update.password = await bcrypt.hash(
+      this._update.password,
+      bcrypt.genSaltSync(SALT_FACTOR),
+    );
+  }
+  next();
+});
+
 userSchema.methods.validPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
