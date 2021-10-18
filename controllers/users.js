@@ -11,7 +11,6 @@ const {
 const { SessionModel, UserSchema } = require('../model');
 const { UsersRepository } = require('../repositories');
 const { httpCode } = require('../helpers');
-// const bcrypt = require('bcryptjs');
 
 require('dotenv').config();
 
@@ -242,6 +241,7 @@ const getCurrentUser = async (req, res, next) => {
         code: httpCode.OK,
         data: {
           id: user.id,
+          picture: user.picture,
           name: user.name,
           email: user.email,
           createdAt: user.createdAt,
