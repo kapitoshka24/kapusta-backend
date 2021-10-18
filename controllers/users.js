@@ -105,6 +105,7 @@ const login = async (req, res, next) => {
             },
             email: data.email,
             name: data.name,
+            picture: data.picture,
             id: data._id,
             createdAt: data.createdAt,
           },
