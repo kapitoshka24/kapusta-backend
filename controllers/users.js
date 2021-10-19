@@ -374,7 +374,7 @@ const googleRedirect = async (req, res) => {
     },
   );
   return res.redirect(
-    `${process.env.LINK_THIS_APP_FRONT}login?accessToken=${accessToken}&refreshToken=${refreshToken}&sid=${newSession._id}`,
+    `${process.env.LINK_THIS_APP_FRONT}login?accessToken=${accessToken}&refreshToken=${refreshToken}&sid=${newSession._id}/`,
   );
 };
 const googleRegister = async (req, res, next) => {
