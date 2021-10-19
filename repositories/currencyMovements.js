@@ -33,7 +33,7 @@ const delLine = async (userId, lineId) => {
 };
 
 const getAll = async (userId, query, path) => {
-  const { limit = 20, page = 1, category, sortBy, sortByDesc } = query;
+  const { limit = 1000, page = 1, category, sortBy, sortByDesc } = query;
   const getOptions = (path, category) => {
     const searchingCategories = [];
     if (!path) {
