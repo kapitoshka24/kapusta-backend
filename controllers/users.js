@@ -353,7 +353,7 @@ const googleRedirect = async (req, res) => {
 
   if (!existingParent) {
     return res.redirect(
-      `${process.env.LINK_THIS_APP_FRONT}login?message=You should register from first`,
+      `${process.env.LINK_THIS_APP_FRONT}login?message=You should register first`,
     );
   }
   const newSession = await SessionModel.create({
