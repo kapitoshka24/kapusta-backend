@@ -11,7 +11,7 @@
   },
   "consumes": ["application/json"],
   "produces": ["application/json"],
-  "servers": [{ "url": "https://kapusta-backend.herokuapp.com/api" }],
+  "servers": [{ "url": "https://kapusta-backend-app.herokuapp.com/api" }],
   "tags": [
     {
       "name": "User",
