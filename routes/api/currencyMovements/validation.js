@@ -10,12 +10,12 @@ const currencyMovementValidateSchema = Joi.object({
   category: Joi.string()
     .valid(...categories)
     .required(),
-  sum: Joi.number().min(0).required(),
+  sum: Joi.number().min(0).max(999999999).required(),
 });
 
 const currencyMovementUpdateValidateSchema = Joi.object({
   name: Joi.string().max(40).optional(),
-  sum: Joi.number().min(0).optional(),
+  sum: Joi.number().min(0).max(999999999).optional(),
 });
 
 const validate = async (schema, validatedValue, errMessage, next) => {
