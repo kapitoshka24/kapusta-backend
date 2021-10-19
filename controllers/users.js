@@ -352,7 +352,11 @@ const googleRedirect = async (req, res) => {
   });
 
   if (!existingParent) {
-    return res.redirect(`${process.env.LINK_THIS_APP_FRONT}login/`);
+    return res.status(httpCode.UNAUTHORIZED).json({
+      status: 'error',
+      code: httpCode.UNAUTHORIZED,
+      message: 'Register first.',
+    });
   }
   const newSession = await SessionModel.create({
     uid: existingParent._id,
