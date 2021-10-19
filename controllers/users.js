@@ -352,6 +352,7 @@ const googleRedirect = async (req, res) => {
   });
 
   if (!existingParent) {
+    await setTimeout(() => {}, 0);
     return res
       .status(httpCode.NOT_FOUND)
       .redirect(`${process.env.LINK_THIS_APP_FRONT}login/`);
@@ -373,6 +374,7 @@ const googleRedirect = async (req, res) => {
       expiresIn: process.env.JWT_REFRESH_EXPIRE_TIME,
     },
   );
+  await setTimeout(() => {}, 0);
   return res.redirect(
     `${process.env.LINK_THIS_APP_FRONT}login?accessToken=${accessToken}&refreshToken=${refreshToken}&sid=${newSession._id}/`,
   );
