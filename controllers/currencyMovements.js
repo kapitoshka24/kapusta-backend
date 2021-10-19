@@ -120,12 +120,14 @@ const getAllLines = async (req, res) => {
     path,
   } = req;
   const pathName = path?.slice(1);
-  const { docs: lines } = await getAll(userId, query, pathName);
+  const { docs: lines, ...pages } = await getAll(userId, query, pathName);
   if (lines.length > 0) {
     return res.json({
       status: statusCode.SUCCESS,
       code: httpCode.OK,
-      data: pathName ? { [pathName]: lines } : { allLines: lines },
+      data: pathName
+        ? { pages, [pathName]: lines }
+        : { pages, allLines: lines },
     });
   }
 
