@@ -352,10 +352,9 @@ const googleRedirect = async (req, res) => {
   });
 
   if (!existingParent) {
-    return res.status(403).send({
-      message:
-        'You should register from front-end first (not postman). Google are only for sign-in',
-    });
+    return res.redirect(
+      `${process.env.LINK_THIS_APP_FRONT}login?message=You should register from first`,
+    );
   }
   const newSession = await SessionModel.create({
     uid: existingParent._id,
