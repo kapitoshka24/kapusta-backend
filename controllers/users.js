@@ -352,7 +352,9 @@ const googleRedirect = async (req, res) => {
   });
 
   if (!existingParent) {
-    return res.redirect('/login');
+    return res
+      .status(httpCode.NOT_FOUND)
+      .redirect(`${process.env.LINK_THIS_APP_FRONT}login/`);
   }
   const newSession = await SessionModel.create({
     uid: existingParent._id,
